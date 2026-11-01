@@ -1,0 +1,10 @@
+{
+  "name": "rolling-sky-2d-handoff",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A spec-faithful 2D polish pass on sharon5u's Rolling Sky handoff.",
+  "scripts": {
+    "test": "node --test test-engine.js test-effects.js test-spec.js"
+  },
+  "engines": { "node": ">=18" }
+}

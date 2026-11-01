@@ -21,11 +21,11 @@ console.log('PASS: fall/crash lifecycle, frozen world on death, effects renderin
 run('start();');
 assert.equal(run('project(300,state.distance).y'),575);
 assert.equal(run('project(90,state.distance).x'),90);
-assert.ok(run('project(510,state.distance+600).scale')>0.7);
+assert.equal(run('project(510,state.distance+600).scale'),1);
 assert.ok(run('project(300,state.distance+600).y')<250);
-run('state.objects=[];for(let i=0;i<200&&state.status==="playing";i++)E.step(state,1/120,1);beginDeath();updateEffects(0.3);draw();drawEffects();');
+run('state.objects=[{type:"gap",x:300,d:3,w:420,h:65}];E.step(state,1/120,0);beginDeath();updateEffects(0.3);draw();drawEffects();');
 assert.equal(run('state.deathType'),'fall');assert.equal(run('mode'),'dying');
-console.log('PASS: higher camera alignment and edge-fall effect integration.');
+console.log('PASS: orthographic camera alignment and gap-fall effect integration.');
 run('start();state.distance=E.LEVELS[0].length*0.575;');
 assert.equal(run('project(300,state.distance).x'),run('300+E.roadOffset(state)'));
 assert.equal(run('project(state.x,state.distance,false).x'),run('state.x'));

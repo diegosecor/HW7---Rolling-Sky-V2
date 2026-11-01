@@ -1,0 +1,37 @@
+/* Presentation extension. The original stylesheet remains the layout foundation. */
+:root { --mint: #d1ff86; --muted: #a8bdd0; }
+body { background: radial-gradient(ellipse at 75% 12%,#173848 0%,#0a1624 66%); font-family: 'Segoe UI',Arial,sans-serif; }
+header { height: 76px; margin: 0 auto; max-width: 1160px; padding: 0 24px; border-color: #bbf2e51a; }
+.brand { font-size: 15px; letter-spacing: 2.5px; }.brandmark { color: #77f1de; }
+.edition { color: #b6cddd; font-size: 9px; }
+main { max-width: 1130px; grid-template-columns: minmax(260px,360px) minmax(0,600px); gap: 50px; margin: 28px auto; align-items: center; }
+aside { padding-top: 0; }h1 { margin: 20px 0; font-weight: 750; letter-spacing: -3px; font-size: clamp(40px,4.6vw,64px); }h1 em { color: #cbf99d; }
+aside p { font-size: 14px; color: #b2c8cf; }
+.level-picker { margin-top: 26px; }.level { background: #152d3b; border-color: #88c8be44; border-radius: 14px; transition: border-color .15s,transform .15s; }
+.level:hover { border-color: #a8f5dd; transform: translateY(-2px); }.level.active { background: #214238; border-color: #d0f994; box-shadow: inset 3px 0 #d1ff86,0 5px 15px #050d1a55; }
+.level strong { color: #f0fff4; font-weight: 650; }.level span,.level small { color: #bed0dc; }
+.game-section { width: min(100%,calc((100vh - 160px)*.76)); margin: auto; }
+.hud { height: 68px; padding: 0 17px; gap: 17px; background: linear-gradient(110deg,#17313b,#173144); border: 1px solid #8ac5c75c; border-bottom: 0; border-radius: 18px 18px 0 0; }
+.hud strong { font-size: 18px; font-weight: 750; }.hud .label { color: #aec8cf; }.route { font-size: 8px; letter-spacing: 1.5px; }.progress { height: 6px; background: #142b3d; }.progress i { background: linear-gradient(90deg,#63dfcd,#d6ff92); }
+.gem-counter { text-align: right; }.gem-counter strong { color: #98f5ee; font-size: 14px; }
+.stage { border-radius: 0 0 18px 18px; border: 1px solid #82bcc66b; box-shadow: 0 18px 60px #020c18aa,0 0 0 4px #122b3b; }
+#overlay { z-index: 4; background: #071c3055; }.overlay-card { width: 81%; padding: 27px 30px; background: linear-gradient(145deg,#193b48f5,#101e32fa); border: 1px solid #a7e3d982; border-radius: 18px; box-shadow: 0 7px 0 #061725,0 20px 50px #0007; }
+.overlay-card h2 { font-size: 34px; font-weight: 800; letter-spacing: -1px; }.overlay-card p { font-size: 12px; color: #c2d9db; }
+.orb { width: 62px; height: 62px; background: radial-gradient(circle at 30% 25%,#faffdf,#d4ff90 38%,#70ad4e 80%,#365d44); box-shadow: 0 0 0 8px #b7ef9b0b,0 0 32px #a5e57633; }
+.primary { margin: 13px 0 20px; background: #d1ff86; border: 1px solid #edffcf; box-shadow: 0 4px 0 #71954d; padding: 14px 17px; letter-spacing: 1px; }.primary:hover { background: #e0ffb0; }.primary:active { transform: translateY(2px); box-shadow: 0 2px 0 #71954d; }
+#pause,#sound,kbd { border-color: #91bec166; }#pause:hover,#sound:hover { background: #345c63; }
+.stage-tag { bottom: 15px; left: 18px; right: 18px; letter-spacing: 1px; }.stage-tag span { background: #0b1c2fc9; border-radius: 5px; padding: 6px; color: #d0e5e9; }.stage-tag span:first-child { color: #d8f7b0; }
+.legend,.controls { color: #b4ccd0; }.legend { gap: 12px; }.legend i.block { background: #76b174; }.legend i.diamond { background: #88f1ef; }.best { color: #a3bdc6; }.best strong { color: #d7f6bb; font-weight: 700; }
+footer { max-width: 1130px; margin: 30px auto; padding: 0 32px; letter-spacing: 1px; color: #87a7b4; }
+body.playing header,body.playing aside,body.playing footer { display: none; }
+body.playing main { display: block; margin: 0 auto; padding: 8px; }
+body.playing .game-section { width: min(100%,calc((100vh - 120px)*.83333),650px); }
+body.victory .overlay-card { border-color: #f1d995; }.victory .orb { background: radial-gradient(circle at 30% 25%,#fff8d9,#ffdc7c 40%,#c89337 90%); animation: medal-arrive .7s ease-out both; position: relative; }
+.victory .orb::after { content: '★'; display: grid; place-items: center; position: absolute; inset: 0; color: #fffcec; font-size: 36px; text-shadow: 0 2px #ac762e; }
+@keyframes medal-arrive { from { transform: scale(.5) rotate(-25deg); opacity: 0; } 65% { transform: scale(1.12) rotate(8deg); } to { transform: scale(1) rotate(0); opacity: 1; } }
+@media(max-width:760px) {
+  header { height: 64px; padding: 0 16px; }.brand { font-size: 13px; }.brandmark { margin-right: 6px; }main { margin: 18px auto; padding: 0 14px; gap: 18px; }h1 { font-size: 34px; letter-spacing: -1.5px; }.game-section { width: min(100%,calc((100vh - 120px)*.76)); }.hud { padding: 0 12px; gap: 12px; height: 60px; }.hud strong { font-size: 15px; }.gem-counter strong { font-size: 12px; }.overlay-card { padding: 18px; }.overlay-card h2 { font-size: 27px; }.overlay-card p { font-size: 11px; }.stage-tag { font-size: 7px; left: 10px; right: 10px; }.controls { flex-wrap: wrap; gap: 10px; }.touch button { min-height: 44px; background: #1c3d4b; border-color: #7bb5b680; }.level { margin-bottom: 0; }body.playing .game-section { width: min(100%,calc((100vh - 185px)*.8333)); }
+}
+@media(max-width:380px) { .gem-counter { display: none; }.hud { gap: 10px; }.controls { font-size: 8px; }.stage-tag { letter-spacing: 0; }.orb { margin: 16px auto; width: 48px; height: 48px; } }
+@media(pointer:coarse) { .touch { display: flex; gap: 9px; padding: 8px 0; }.touch button { flex: 1; min-height: 44px; border-radius: 8px; touch-action: none; } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation: none!important; transition: none!important; } }
