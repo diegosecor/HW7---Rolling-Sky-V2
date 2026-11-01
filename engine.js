@@ -15,8 +15,8 @@
   function darkness(s) {
     const p = s.distance / LEVELS[s.index].length;
     const smooth = value => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
-    // Fade in 25–30%, hold deep night to 45%, recover by 50%.
-    return 0.97 * smooth((p - 0.25) / 0.05) * smooth((0.50 - p) / 0.05);
+    // Preserve the inherited night section without obscuring incoming hazards.
+    return 0.55 * smooth((p - 0.25) / 0.05) * smooth((0.50 - p) / 0.05);
   }
   function roadOffset(s) {
     const p = s.distance / LEVELS[s.index].length;
@@ -44,7 +44,7 @@
   function create(index = 0) { return { index, distance: 0, x: 300, vx: 0, time: 0, jump: 0, diamonds: 0, status: 'playing', reason: '', deathType: null, objects: layout(index) }; }
   function objectX(o, time) { return o.type === 'moving' ? 300 + Math.sin(time * 1.6 + o.phase) * 120 : o.x; }
   function jump(s) { if (s.status === 'playing' && s.jump === 0) s.jump = 0.82; }
-  function height(s) { return s.jump > 0 ? Math.sin((1 - s.jump / 0.82) * Math.PI) * 65 : 0; }
+  function height(s) { const t=1-s.jump/.82;return s.jump>0?4*65*t*(1-t):0; }
   function score(s) { return Math.floor(s.distance / 10) + s.diamonds * 100; }
   function step(s, dt, direction, collect = () => {}) {
     if (s.status !== 'playing') return;
@@ -59,11 +59,9 @@
     if (Math.abs(s.vx) < 0.1) s.vx = 0;
     s.distance += (level.speed + level.acceleration * s.distance / level.length) * dt;
     const offset = roadOffset(s);
-    // Losing ground support at either edge triggers the same fall as a gap.
-    if (s.x < TRACK.left + offset || s.x > TRACK.right + offset) {
-      s.status = 'lost'; s.deathType = 'fall'; s.reason = 'You rolled off the edge of the sky.';
-      return;
-    }
+    // The essential spec requires the ball to stay inside the track boundaries.
+    const bounded=Math.max(TRACK.left+TRACK.radius+offset,Math.min(TRACK.right-TRACK.radius+offset,s.x));
+    if(bounded!==s.x){s.x=bounded;s.vx=0;}
     s.jump = Math.max(0, s.jump - dt);
     for (const o of s.objects) {
       if (o.collected) continue;
