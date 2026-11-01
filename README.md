@@ -1,6 +1,7 @@
 # Rolling Sky — 2D Skyline Run
 
-**Original game design, specification and foundation: [sharon5u](https://github.com/sharon5u/gamegame).**  
+**Original game design, specification and foundation: [sharon5u](https://github.com/sharon5u/gamegame).**
+
 Phase 2 implementation and visual polish: Diego, with AI assistance documented in `prompt_log.md`.
 
 This version follows the original top-down 2D specification. It starts from the author's received project, rather than from the separate experimental chase-camera version. The original course generation, gameplay engine, controls, scoring and two-level structure remain the foundation.
