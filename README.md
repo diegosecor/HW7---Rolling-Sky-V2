@@ -1,51 +1,111 @@
-# Rolling Sky — Skyline Run
+# Rolling Sky — 2D Skyline Run
 
-A local, original fan-made prototype inspired by Rolling Sky. No downloads, npm packages, or build tools required. All graphics and sound effects are generated in the browser.
+**Original game design, specification and foundation: [sharon5u](https://github.com/sharon5u/gamegame).**  
+Phase 2 implementation and visual polish: Diego, with AI assistance documented in `prompt_log.md`.
 
-## Play and edit in VS Code
+This version follows the original top-down 2D specification. It starts from the author's received project, rather than from the separate experimental chase-camera version. The original course generation, gameplay engine, controls, scoring and two-level structure remain the foundation.
 
-1. Open this `rolling-sky` folder in VS Code (File → Open Folder).
-2. Open `index.html` in any modern browser by double-clicking it in Finder/Explorer.
-3. Edit the files, save, and refresh the browser. Optionally use VS Code's Live Server extension for automatic reloads.
+## Run
 
-Controls: hold **← / →** to steer, press **↑** to jump, **P** to pause/resume, and **Space** to restart after losing or winning. Click **Let's roll** to start. Touch controls appear on smaller screens. Switching routes resets the run. Leaving the browser pauses automatically.
+Open `index.html` in a modern browser. Everything is local: no installation, dependencies, server, build step or internet connection is required.
 
-## What's included
+- Left / right arrows: steer.
+- Up: jump across gaps. Obstacles are tall and must be avoided.
+- P: pause or resume.
+- Space: restart after losing or winning.
+- Audio button: toggle synthesized background music and effects.
+- Touch buttons appear on small screens or coarse-pointer devices.
 
-- Two deterministic courses with different layouts, lengths, colors, and speeds.
-- Automatic forward movement, scrolling tiles, smooth horizontal steering with edge falls, and animated jumps.
-- Voxel trees, mountains and rocks; animated walking ducks; partial and full-width sky gaps; collision detection.
-- Distance scoring (1 point / 10 world pixels), collectible diamonds (+100), progress, finish line, loss and victory screens.
-- Optional synthesized sound effects; toggle Sound on. High score stored locally in your browser when storage is available.
-- Ball rolling animation, responsive layout, keyboard and touch input.
+The ball moves forward automatically. Collect cyan diamonds, avoid obstacles and reach the checkered finish. Azure ascent is the introductory course; Violet velocity is faster and has extra obstacles. Both retain the original nightfall and crosswind sections. The menu hides during play and returns on the results screen.
 
-Steer around trees, mountains, rocks, and ducks; jumping is for gaps. Jump gaps before reaching their edge. Jumps last 0.82 seconds, with a brief takeoff and landing period. The first hazards are deliberately spaced away from the starting point. Each course has a clear route but diamonds near moving hazards still require timing. Background music is not included.
+## Scope and priorities
 
-## Source map
+1. Keep the inherited engine and course logic.
+2. Correct the essential track-boundary requirement.
+3. Use an orthographic 2D view with constant tile sizes and clear obstacle footprints.
+4. Improve readability and finish the presentation.
+5. Verify the acceptance criteria and document remaining submission tasks.
 
-- `index.html`: start/end overlays, score HUD, route selection, controls.
-- `style.css`: layout, responsive behavior, colors and typography.
-- `engine.js`: pure gameplay rules. Edit `LEVELS` to tune speed, length, and spacing; edit `layout()` for obstacle placement. Distances are world pixels and lane numbers are 0–4.
-- `game.js`: canvas drawing, keyboard/touch input, sound, storage, and fixed 120 Hz simulation.
-- `test-engine.js`: gameplay regression tests; run `node test-engine.js` if Node.js is installed.
+The view has no vanishing point, camera tilt or distance-dependent scale. Jump height changes the ball's scale and shadow, rather than moving its ground position forward. Beveled sprite panels, restrained highlights, tile grain, particles and a victory medal provide detail within the 2D view.
 
-Jumping changes only the ball's visual height and gap clearance. The ball's ground position remains at 575 canvas pixels while the world scrolls toward it. A shared perspective projection draws the continuous cobalt-and-emerald trail, terrain, collectibles and ball; gameplay stays in world coordinates. World-indexed texture details prevent tile pattern popping. The dark interface uses saturated cobalt, violet, emerald and lime accents, paired with a deep blue night sky, sparse stars, faint clouds, and two small floating islands. Voxel scenery is original procedural canvas art. Simulation uses small fixed steps to prevent obstacle tunneling. No assets, code, or music from the original game are included.
+## Acceptance criteria report
 
-## Faster action and impact effects
+The numbering below follows the author's original order. The text in `SPEC.md` has not been edited.
 
-Forward speed and steering are about 50% faster. The ball spins faster and leaves a short trail; peripheral streaks emphasize movement. Diamonds trigger particles and a +100 popup. Duck patrols leave the outside lanes usable at the faster pace.
+| ID | Original acceptance criterion | Status and evidence |
+| --- | --- | --- |
+| E1 | Start screen shows title and basic controls | Met — the opening overlay names Rolling Sky and shows arrow controls. |
+| E2 | Clicking Start begins the game | Met — Start resets state and begins the fixed-step simulation. |
+| E3 | Ball stays near the bottom as the track scrolls downward | Met — the ground anchor is y=575 on a 720-pixel board; the projection is linear in world distance. |
+| E4 | Left/right arrows move the ball left/right | Met — the inherited eased horizontal steering is retained. |
+| E5 | Ball cannot move beyond the track boundaries | Met — corrected the inherited edge-fall behavior with a radius-aware clamp, including during crosswind. |
+| E6 | Static obstacles appear and move toward the player | Met — inherited tree, rock and peak objects scroll with the world. |
+| E7 | Obstacle collisions immediately end the game | Met — collision sets the lost state and freezes simulation immediately; a short impact effect precedes the result overlay. |
+| E8 | Falling into a gap ends the game | Met — grounded gap contact triggers the inherited fall state and animation. |
+| E9 | A game-over message appears | Met — the result overlay shows the cause, score and restart instruction. |
+| E10 | Space after losing restarts from the beginning | Met — Space calls the inherited reset/start flow. |
+| M1 | Points are earned for distance | Met — score includes one point per ten world pixels. |
+| M2 | Collecting a diamond increases score | Met — each collected diamond adds 100 points. |
+| M3 | Current score is displayed | Met — the HUD updates from engine score; a gem counter is also visible. |
+| M4 | Scrolling speed increases through the level | Met — the inherited distance-based acceleration is unchanged. |
+| M5 | A defined finish line exists | Met — both levels have a fixed length and a checkered finish. |
+| M6 | Reaching the finish without losing shows victory | Met — the won state shows a result overlay, particles and a gold medal animation. |
+| M7 | A moving obstacle type appears | Met — the inherited horizontal duck patrol is retained. |
+| O1 | At least two levels have different obstacle layouts | Met — both received level definitions and their deterministic layout differences remain. |
+| O2 | Background music plays during gameplay | Met — optional quiet synthesized melodies play when Audio is enabled; music pauses with the run. |
+| O3 | Collection and collision sound effects play | Met — the inherited tone effects remain behind the Audio toggle. |
+| O4 | The ball has a rolling animation | Met — the inherited rotating surface mark is retained. |
+| O5 | Highest score is recorded and displayed | Met — the inherited best-score display uses local storage when the browser allows it. |
 
-On obstacle impact, gameplay freezes immediately and the ball bursts into fragments with a short screen shake, then shows the result after 0.85 seconds. A missed gap shrinks and fades the ball into the sky over 1.15 seconds before showing the result. Steering eases into motion and brakes smoothly when released. Crossing either road edge triggers a fall, including while jumping; missing track sections also cause falls. The higher camera reduces perspective and exposes more of the road surface. Restart clears all effects. System reduced-motion preferences disable screen shake, impact tint, and speed streaks.
+The overview's 2D top-down presentation, colorful tiled track, contrasting ball, distinct gaps/diamonds and separate start/loss/victory states are also implemented.
 
-Run `node test-engine.js` for gameplay checks and `node test-effects.js` for headless animation lifecycle checks.
+## Preserving the original work
 
-## Progression challenges
+The first commit, `4902123` (`Initial commit: unmodified code as received`), contains the author's eight unchanged files. Its Git tree is `3b3d4e7d331f9f703ddca46842848bd148d7a1b4`, identical to the received source commit `2f03b9c`.
 
-Both levels include two distance-triggered sections:
+The existing `SkyEngine` API and IIFE/module structure, `TRACK`, both `LEVELS`, `layout()`, `create()`, `objectX()`, `jump()`, `score()`, distance acceleration, collision checks, collectible rules and status flow are retained. Targeted engine changes enforce track boundaries, keep night hazards readable, and make the existing jump-height curve parabolic.
 
-- **25–50% — Nightfall:** darkness fades in from 25–30%, stays at 97% outside the flashlight through 45%, then smoothly returns to normal by 50%. A soft elliptical flashlight follows the ball and reveals a short stretch of road ahead. The HUD, controls and overlays stay readable.
-- **55–65% — Crosswind:** the entire road sways right then left and returns to center. Obstacles, gaps, diamonds and edge collision boundaries shift together; the player must steer to stay on the road. The shift envelope has zero slope at its endpoints, so there are no sudden jumps.
+In `game.js`, the original input flow, fixed 120 Hz simulation, score/HUD updates, overlays, sound generator, storage, death effects, tile rendering, pixel-art helper and scenery categories remain in use. The projection and sprite coordinates were adapted for a true top-down view. The old floating-island decoration was removed because it did not fit that view. A quiet music scheduler extends the existing sound generator.
 
-The small label below the course identifies each active challenge. These effects are driven by distance, so pausing freezes them and restarting resets them. Tune `darkness()` and `roadOffset()` in `engine.js` to adjust the intensity and windows.
+The original stylesheet remains unchanged; `polish.css` extends its layout and presentation. The original HTML structure, element IDs and original test files are retained. No new engine or unrelated progression system replaces the foundation. The baseline and subsequent commits make the preservation review traceable; a line-count percentage is not a measure of the assignment's work-preservation rule.
 
-Obstacle rows now arrive roughly 30% more often: Azure has 30 hazard rows and Violet has 34. Row spacing starts at 330/350 world pixels and tightens gradually by up to 12% toward the finish. The opening runway remains clear so you can settle into the controls.
+`SPEC.md` has exactly the same bytes as the author's `spec.md`; only capitalization was changed to match the requested deliverable filename.
+
+## Code map
+
+- `engine.js`: inherited pure game rules. Tune `LEVELS` for speed/length, `layout()` for object placement, `step()` for steering/collisions and `height()` for jump clearance.
+- `game.js`: inherited renderer and app loop. `project()` is the orthographic mapping; `scenery()` draws overhead obstacles; `draw()` renders the board; input handlers, music and effects live alongside the original state transitions.
+- `index.html`: original interface structure, updated copy, controls and gem counter.
+- `style.css`: received stylesheet, unchanged.
+- `polish.css`: additive arcade styling, gameplay focus, touch sizing and victory animation.
+- `test-engine.js`: inherited rules/course tests, updated for bounded edges and readable nightfall.
+- `test-effects.js`: inherited effect lifecycle tests, updated for orthographic projection.
+- `test-spec.js`: additional acceptance-oriented checks for consistent 2D tile scale, controls, score, state transitions, storage, music and local resource paths.
+- `prompt_log.md`: models/tools, verbatim prompts, English translations and an unwanted AI change with its correction.
+
+## Verification
+
+With Node.js 18 or newer, run `npm test`. No package installation is needed. The equivalent command is:
+
+```text
+node --test test-engine.js test-effects.js test-spec.js
+```
+
+Tests traverse both courses and exercise gameplay, effects, input and acceptance behavior. Orthographic checks verify constant scale and 84-pixel tile widths at different distances and in both routes. Renderer checks use a simulated canvas, not a real browser screenshot.
+
+## Known limitations and deliberate tradeoffs
+
+- A new visual playtest in the user's browser is still needed; automated drawing checks cannot judge aesthetics.
+- Browsers require user interaction before audio can start. Audio is muted initially.
+- Some browsers restrict local storage for local files; the game remains playable but cannot guarantee persistent best scores in that case.
+- Art and music are procedural to keep the project portable and asset-free. This is an arcade jump used for gap clearance, not a 3D physics simulation.
+- The original start/loss/win structure is preserved. The impact/fall animation deliberately delays the result message, while the world stops immediately.
+
+## Next steps and submission
+
+1. Play both routes in the target browser and check touch controls and Audio.
+2. Write `HANDOFF_REPORT.md` personally. The assignment explicitly requires the student to write that reflection without AI; it has intentionally not been generated here.
+3. Review the baseline and changes against the preservation requirement.
+4. Publish this repository publicly, then submit both assignment repository links in the required Google form.
+
+This folder has local commits. It has not been published or submitted.
