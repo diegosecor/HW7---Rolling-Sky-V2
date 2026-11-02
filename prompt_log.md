@@ -48,3 +48,15 @@ The earlier exploration pursued chase-camera depth, hill momentum and a larger c
 ## Limits of AI assistance
 
 The AI updated technical documentation and tests. It did not write `HANDOFF_REPORT.md`. That personal reflection must be authored by the student, as required by the assignment. No Git history was backdated, and the initial baseline was committed before editing this new project.
+
+## Additional pixel-art direction
+
+Original user prompt:
+
+> mejora todooooo, quiero una estetica pixel art supremamente artistica y creativa con degradados, animales mas detallados y muy bonito
+
+English translation:
+
+> Improve everything. I want an extremely artistic and creative pixel-art aesthetic, with gradients, more detailed animals, and a beautiful overall presentation.
+
+Actions: extended the existing renderer with original pixel painters in `pixel-art.js`, a pixel-art UI skin, two garden palettes, stepped color gradients and deterministic tile textures. The inherited moving duck now has three feather palettes, discrete wing/foot poses and blinking; decorative frogs, koi, butterflies, lotus flowers and fireflies stay outside the playable tiles. The engine and original specification were not changed. Static raster previews were rendered from the drawing code and inspected; this was not interactive browser playtesting.
