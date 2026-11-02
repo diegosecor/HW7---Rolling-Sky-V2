@@ -27,6 +27,9 @@ function updateJournal(){
   const seconds=Math.round(level.length/level.acceleration*Math.log(1+level.acceleration/level.speed));
   $('level-duration').textContent='~'+seconds+'s';$('level-gems').textContent=journal[selected].gems+' / '+total;
   $('level-best').textContent=journal[selected].best?String(journal[selected].best):'—';$('level-tip').textContent=level.tip;
+  $('selection-number').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0');
+  $('play-selected').textContent='PLAY LEVEL '+String(selected+1).padStart(2,'0')+' →';
+  selectedSealCtx.clearRect(0,0,32,32);SkyPixelArt.emblem(selectedSealCtx,selected);
   const next=nextGarden(),destination=next===null?'ALL GARDENS CLEARED':'NEXT '+String(next+1).padStart(2,'0')+' · '+E.LEVELS[next].name.toUpperCase();
   $('level-next').textContent=destination;$('journey-next').textContent=destination;
   $('journey-current').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' OF '+String(E.LEVELS.length).padStart(2,'0');
@@ -49,7 +52,7 @@ function selectLevel(index){
   if(document.body?.dataset)document.body.dataset.world=String(selected);
   const theme=SkyPixelArt.THEMES[selected];
   document.body?.style?.setProperty('--world-top',theme.top);document.body?.style?.setProperty('--world-bottom',theme.bottom);
-  document.body?.classList.remove('playing','victory');
+  document.body?.classList.remove('playing','victory','in-game');document.body?.classList.add('at-home');
   $('route-name').textContent=E.LEVELS[selected].name.toUpperCase();
   overlay('GARDEN '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0'),E.LEVELS[selected].name,E.LEVELS[selected].description,'Let’s roll ↗','← → TO STEER · ↑ TO JUMP');
   updateHUD();updateJournal();
@@ -57,7 +60,27 @@ function selectLevel(index){
 const PLAYER_Y=575;
 // Keep a full world-pixel canvas for fine engraved and feather details.
 canvas.width=600;canvas.height=720;ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;
-const guideCanvas=$('field-guide'),guideCtx=guideCanvas?.getContext('2d');
+const mapCanvas=$('atlas-map'),mapCtx=mapCanvas.getContext('2d'),selectedSealCtx=$('selected-seal').getContext('2d');
+const mapMedia=window.matchMedia('(max-width: 640px)');
+let mapLayout=mapMedia.matches?SkyAtlas.LAYOUTS.tall:SkyAtlas.LAYOUTS.wide,mapBase=null,mapKey='';
+function syncAtlas(){
+  mapLayout=mapMedia.matches?SkyAtlas.LAYOUTS.tall:SkyAtlas.LAYOUTS.wide;
+  mapCanvas.width=mapLayout.width;mapCanvas.height=mapLayout.height;mapCtx.imageSmoothingEnabled=false;mapBase=null;mapKey='';
+  document.querySelectorAll('[data-level]').forEach(b=>{
+    const [x,y]=mapLayout.nodes[Number(b.dataset.level)];
+    b.style.left=x/mapLayout.width*100+'%';b.style.top=y/mapLayout.height*100+'%';
+  });
+}
+mapMedia.addEventListener?.('change',syncAtlas);
+function drawHome(){
+  const key=mapLayout.width+':'+journal.map(j=>j.cleared?'1':'0').join('');
+  if(key!==mapKey&&typeof document.createElement==='function'){
+    mapBase=document.createElement('canvas');mapBase.width=mapLayout.width;mapBase.height=mapLayout.height;
+    SkyAtlas.paint(mapBase.getContext('2d'),mapLayout,journal);mapKey=key;
+  }
+  if(mapBase)mapCtx.drawImage(mapBase,0,0);else SkyAtlas.paint(mapCtx,mapLayout,journal);
+  SkyAtlas.animate(mapCtx,mapLayout,selected,artClock,reducedMotion);
+}
 const portrait=$('hero-portrait'),portraitCtx=portrait?.getContext('2d');
 let musicStep=-1;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -119,7 +142,7 @@ function overlay(label, title, copy, button, hint) {
   $('next-route').hidden=true;$('back-map').hidden=mode==='ready';$('run-summary').hidden=true;
   $('overlay').classList.remove('hidden'); $('screen-label').textContent = label; $('screen-title').textContent = title; $('screen-copy').textContent = copy; $('start').textContent = button; $('screen-hint').textContent = hint;
 }
-function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); introRemaining=2.2;$('banner-title').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' · '+E.LEVELS[selected].name.toUpperCase();$('level-banner').hidden=false;updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
+function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing','in-game');document.body?.classList.remove('victory','at-home'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); introRemaining=2.2;$('banner-title').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' · '+E.LEVELS[selected].name.toUpperCase();$('level-banner').hidden=false;updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
 function pause() {
   if (mode === 'playing') { mode = 'paused';$('level-banner').hidden=true; keys.clear(); overlay('TAKE A BREATHER', 'Sky on standby.', 'Your run is right where you left it.', 'Continue ↗', 'P TO RESUME'); $('pause').textContent = '▶'; }
   else if (mode === 'paused') { mode = 'playing'; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ'; }
@@ -157,9 +180,10 @@ $('back-map').onclick=()=>{selectLevel(selected);$('garden-atlas').scrollIntoVie
 $('play-selected').onclick=start;
 $('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? 'Audio off' : 'Audio on'; $('sound').setAttribute('aria-pressed', !muted); beep(650, 0.1); };
 document.querySelectorAll('[data-level]').forEach(button=>button.onclick=()=>selectLevel(Number(button.dataset.level)));
+syncAtlas();
+document.body?.classList.add('at-home');
 const pendingGarden=journal.findIndex(j=>!j.cleared);
 if(pendingGarden>0)selectLevel(pendingGarden);else {updateJournal();updateHUD();}
-document.querySelectorAll('[data-symbol]').forEach(badge=>SkyPixelArt.emblem(badge.getContext('2d'),Number(badge.dataset.symbol)));
 function press(key, repeat = false) { if(key==='Enter'&&!repeat&&mode==='won')advanceGarden(); if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
 window.addEventListener('keydown', e => { if ((mode==='won'&&e.key==='Enter')||(['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key))) e.preventDefault(); press(e.key, e.repeat); });
 window.addEventListener('keyup', e => keys.delete(e.key));
@@ -204,7 +228,6 @@ function pavingRow(row){
 function draw() {
   const distance=state.distance,theme=SkyPixelArt.THEMES[selected];
   SkyPixelArt.backdrop(ctx,selected,distance,artClock,reducedMotion);
-  if(guideCtx && mode!=='playing' && mode!=='dying')SkyPixelArt.vignette(guideCtx,selected,artClock,reducedMotion);
   if(portraitCtx && mode!=='playing' && mode!=='dying'){
     portraitCtx.clearRect(0,0,48,48);portraitCtx.save();portraitCtx.translate(24,24);
     if(mode==='won')SkyPixelArt.medal(portraitCtx);else SkyPixelArt.orb(portraitCtx,reducedMotion?0:artClock*.4);
@@ -272,10 +295,13 @@ function frame(now) {
     }
     updateHUD();
   } else accumulator=0;
-  playMusic();updateEffects(dt);draw();drawEffects();
-  // Canvas only: score, progress, controls and result text remain fully readable.
-  const dim=E.darkness(state);
-  if(dim>0)drawFlashlight(dim);
+  playMusic();updateEffects(dt);
+  if(mode==='ready')drawHome();
+  else {
+    draw();drawEffects();
+    // Canvas only: score, progress, controls and result text remain fully readable.
+    const dim=E.darkness(state);if(dim>0)drawFlashlight(dim);
+  }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

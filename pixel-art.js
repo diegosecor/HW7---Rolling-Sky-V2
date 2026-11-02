@@ -585,6 +585,6 @@
     for(let i=0;i<6;i++)flower(c,12+i*54,92-i%2*6,theme,i);
     spark(c,93,24,theme.glow,2);spark(c,205,72,theme.glow,2);c.restore();
   }
-  const api={THEMES,rect,micro,thread,fern,emblem,oval,spark,flower,backdrop,tile,frieze,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
+  const api={THEMES,rect,micro,thread,fern,emblem,oval,spark,flower,lily,frog,fish,backdrop,tile,frieze,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
   if(typeof module!=='undefined')module.exports=api;root.SkyPixelArt=api;
 })(typeof window!=='undefined'?window:globalThis);

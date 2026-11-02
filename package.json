@@ -5,7 +5,7 @@
   "description": "A spec-faithful 2D polish pass on sharon5u's Rolling Sky handoff.",
   "scripts": {
     "pretest": "node make-portable.cjs",
-    "test": "node --test test-engine.js test-effects.js test-spec.js test-pixel-art.js",
+    "test": "node --test test-engine.js test-effects.js test-spec.js test-pixel-art.js test-atlas.js",
     "portable": "node make-portable.cjs"
   },
   "engines": { "node": ">=18" }

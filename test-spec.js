@@ -14,14 +14,14 @@ function node(id,dataset={}){
 const routes=E.LEVELS.map((_,i)=>node('route'+i,{level:String(i)}));
 const controls=['ArrowLeft','ArrowUp','ArrowRight'].map(key=>node(key,{key}));
 const body={classList:{add:(...n)=>n.forEach(x=>classes.add(x)),remove:(...n)=>n.forEach(x=>classes.delete(x)),toggle(n,on){if(on)classes.add(n);else classes.delete(n);}}};
-const sandbox={SkyEngine:E,SkyPixelArt:require('./pixel-art'),Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener:(name,fn)=>listeners[name]=fn},document:{body,hidden:false,getElementById:id=>{assert.ok(ids.includes(id));return node(id);},querySelector:node,querySelectorAll:q=>q==='[data-level]'?routes:q==='[data-key]'?controls:[],addEventListener:(name,fn)=>listeners[name]=fn},localStorage:{getItem:k=>saved.get(k)??null,setItem:(k,v)=>saved.set(k,String(v))},requestAnimationFrame(){}};
+const sandbox={SkyEngine:E,SkyPixelArt:require('./pixel-art'),SkyAtlas:require('./atlas-art'),Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener:(name,fn)=>listeners[name]=fn},document:{body,hidden:false,getElementById:id=>{assert.ok(ids.includes(id));return node(id);},querySelector:node,querySelectorAll:q=>q==='[data-level]'?routes:q==='[data-key]'?controls:[],addEventListener:(name,fn)=>listeners[name]=fn},localStorage:{getItem:k=>saved.get(k)??null,setItem:(k,v)=>saved.set(k,String(v))},requestAnimationFrame(){}};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),sandbox);
 const run=code=>vm.runInContext(code,sandbox);
-assert.equal(run('mode'),'ready');assert.match(html,/<h2 id="screen-title">Rolling Sky/);
+assert.equal(run('mode'),'ready');assert.ok(classes.has('at-home'));run('drawHome();');assert.match(html,/<h2 id="screen-title">Rolling Sky/);
 assert.ok(html.includes('← → to steer. ↑ to jump.'));
 node('start').onclick();assert.equal(run('mode'),'playing');assert.ok(classes.has('playing'));
 for(let index=0;index<E.LEVELS.length;index++){
- routes[index].onclick();assert.equal(run('selected'),index);node('start').onclick();
+ routes[index].onclick();assert.equal(run('selected'),index);assert.ok(classes.has('at-home'));node('start').onclick();assert.ok(classes.has('in-game'));assert.ok(!classes.has('at-home'));
  for(const distance of [0,1500,E.LEVELS[index].length*.575,E.LEVELS[index].length]){
   run(`state.distance=${distance};`);
   for(const ahead of [-100,0,100,400,800]){
@@ -60,7 +60,7 @@ assert.equal(node('current-level').textContent,'LEVEL 01 / 08');
 listeners.keydown({key:'Enter',repeat:false,preventDefault(){}});assert.equal(run('selected'),1);assert.equal(run('mode'),'playing');
 assert.equal(node('current-level').textContent,'LEVEL 02 / 08');
 assert.match(node('banner-title').textContent,/LEVEL 02 · VIOLET VELOCITY/);
-node('pause').onclick();node('back-map').onclick();assert.equal(run('mode'),'ready');assert.equal(run('state.distance'),0);assert.ok(!classes.has('playing'));
+node('pause').onclick();node('back-map').onclick();assert.equal(run('mode'),'ready');assert.equal(run('state.distance'),0);assert.ok(!classes.has('playing'));assert.ok(classes.has('at-home'));assert.ok(!classes.has('in-game'));
 for(let index=0;index<E.LEVELS.length;index++){
  routes[index].onclick();node('start').onclick();
  run(`state.objects=[];state.distance=E.LEVELS[${index}].length-1;last=5000;frame(5033);`);
@@ -83,12 +83,12 @@ assert.equal(node('campaign-count').textContent,'0 / 8 CLEARED','damaged storage
 const portable=fs.readFileSync(__dirname+'/JUGAR.html','utf8');
 assert.ok(!/<(?:script|link)\b[^>]*(?:src|href)="(?!#)/i.test(portable),'portable game needs no sibling script or stylesheet');
 const embedded=[...portable.matchAll(/<script data-source="([^"]+)">([\s\S]*?)<\/script>/g)];
-assert.deepEqual(embedded.map(s=>s[1]),['engine.js','pixel-art.js','game.js']);
+assert.deepEqual(embedded.map(s=>s[1]),['engine.js','pixel-art.js','atlas-art.js','game.js']);
 assert.ok(portable.indexOf('<script data-source=')>portable.indexOf('id="start"'),'portable scripts run after the game interface exists');
 const standalone={...sandbox,matchMedia:()=>({matches:false}),addEventListener(){}};
 standalone.window=standalone;vm.createContext(standalone);
 for(const script of embedded)vm.runInContext(script[2],standalone,{filename:script[1]});
-vm.runInContext('draw();start();E.jump(state);last=1000;frame(1033);',standalone);
+vm.runInContext('drawHome();draw();start();E.jump(state);last=1000;frame(1033);',standalone);
 assert.equal(vm.runInContext('mode',standalone),'playing');assert.ok(vm.runInContext('E.height(state)',standalone)>0);
 console.log('PASS: single-file JUGAR.html embeds its assets, initializes, starts, renders and jumps.');
 console.log('PASS: eight-garden atlas, named next route/Enter shortcut, current-level cues, continue on reload, return to map, per-route records, all-gardens victory and storage recovery.');

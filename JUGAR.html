@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rolling Sky — Moonlit Gardens</title><style data-source="style.css">
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rolling Sky — Moonlit Gardens</title>
+<style data-source="style.css">
 :root{color-scheme:dark;--muted:#81979f;--mint:#c0ff78}*{box-sizing:border-box}body{margin:0;background:#09191f;color:#eef6f3;font-family:Arial,Helvetica,sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer;color:inherit}button:focus-visible,a:focus-visible{outline:3px solid var(--mint);outline-offset:4px}header{height:90px;margin:0 5%;display:flex;align-items:center;gap:28px;border-bottom:1px solid #ffffff15}.brand{color:inherit;text-decoration:none;font-size:18px;font-weight:800;letter-spacing:2px}.brandmark{color:var(--mint);font-size:30px;vertical-align:middle;margin-right:12px}.edition{font-size:10px;letter-spacing:2px;color:var(--muted);margin-left:auto}#sound{background:none;border:1px solid #385057;border-radius:30px;padding:10px 17px;font-size:12px}main{max-width:1240px;margin:36px auto;display:grid;grid-template-columns:1fr 600px;gap:70px;padding:0 32px}aside{padding-top:28px}.eyebrow,.label{font-size:10px;letter-spacing:2px;font-weight:700;color:var(--mint)}h1{font-size:clamp(48px,5.3vw,76px);font-weight:500;line-height:1.05;letter-spacing:-4px;margin:28px 0}h1 em{color:var(--mint);font-style:normal}aside p{font-size:16px;color:#a4b9c0;line-height:1.8}.level-picker{margin-top:36px}.level-picker>.label{color:var(--muted);display:block;margin-bottom:14px}.level{display:flex;flex-direction:column;gap:12px;width:100%;text-align:left;padding:18px;background:transparent;border:1px solid #31484e;border-radius:10px;margin-bottom:9px}.level span{font-size:12px;color:#81979f}.level strong{font-size:16px;color:#e8f1ef;margin-left:16px;font-weight:500}.level small{font-size:9px;letter-spacing:1.6px;padding-left:32px;color:#81979f}.level.active{border-color:#a8dc77;background:#c0ff7809}.level.active span,.level.active small{color:var(--mint)}.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:26px;font-size:11px;color:#a4b9c0}.legend span{display:flex;align-items:center;gap:8px}.legend i{width:11px;height:11px;display:inline-block}.block{background:#ff796e;border-radius:2px}.diamond{background:#bfff81;transform:rotate(45deg)}.gap{background:#031119;border:1px dashed #6d949e}.best{font-size:10px;color:var(--muted);letter-spacing:2px;margin-top:32px;display:flex;align-items:center;gap:20px}.best strong{font-size:22px;color:white;font-weight:400;letter-spacing:1px}.game-section{min-width:0}.hud{height:73px;display:flex;align-items:center;gap:24px;padding:0 20px;background:#10282f;border:1px solid #2a4248;border-bottom:0;border-radius:16px 16px 0 0}.hud .label{display:block;color:var(--muted);font-size:8px;margin-bottom:7px}.hud strong{font-size:20px;font-weight:500;font-variant-numeric:tabular-nums}.route{flex:1;font-size:9px;letter-spacing:2px;color:#c6d6d8}.progress{height:4px;background:#2d464c;margin-top:12px;border-radius:4px;overflow:hidden}.progress i{display:block;background:var(--mint);width:0%;height:100%}#pause{background:none;border:1px solid #3b5259;border-radius:7px;padding:8px}.stage{position:relative;overflow:hidden;border:1px solid #345057;border-radius:0 0 16px 16px;background:#103442}canvas{display:block;width:100%;height:auto}#overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#061d2855;backdrop-filter:blur(4px)}#overlay.hidden{display:none}.overlay-card{text-align:center;background:#0c252ce8;border:1px solid #6a939655;border-radius:20px;padding:30px 35px;box-shadow:0 24px 60px #0005;width:82%;max-width:390px}.orb{width:55px;height:55px;border-radius:50%;margin:24px auto;background:radial-gradient(circle at 30% 25%,#fff9c9,#d7ff8f 35%,#7bbb39 80%);box-shadow:0 0 40px #bdff7840}.overlay-card h2{font-size:32px;letter-spacing:-1px;font-weight:500;margin:12px 0}.overlay-card p{font-size:14px;line-height:1.7;color:#a9c3c9}.primary{width:100%;padding:16px 20px;border:0;border-radius:8px;background:var(--mint);color:#193020;font-weight:700;margin:15px 0 22px;text-align:left}.primary span{float:right}.overlay-card small{display:block;font-size:9px;letter-spacing:1.5px;color:#a5bdc3}.stage-tag{position:absolute;bottom:18px;left:22px;right:22px;display:flex;justify-content:space-between;font-size:8px;letter-spacing:2px;color:#a9ccd3;pointer-events:none}.stage-tag span:first-child{color:#b5eec0}.controls{display:flex;gap:16px;justify-content:center;padding:17px 0;font-size:10px;color:#94abb2}.controls span{display:flex;align-items:center;gap:5px}kbd{font-family:inherit;border:1px solid #3a5158;padding:4px;border-radius:4px;font-size:10px}.touch{display:none}footer{display:flex;justify-content:space-between;margin:30px 5%;font-size:9px;letter-spacing:2px;color:#5f7e88}@media(min-width:1400px){main{margin-top:50px}}@media(max-width:1050px){main{grid-template-columns:300px 1fr;gap:30px}.controls{flex-wrap:wrap}h1{font-size:58px}}@media(max-width:760px){header{height:70px}.edition{display:none}#sound{margin-left:auto}main{display:flex;flex-direction:column;padding:0 16px;margin:20px auto;gap:20px;max-width:600px}aside{padding:0}h1{font-size:40px;margin:15px 0;letter-spacing:-2px}h1 br{display:none}h1 em{margin-left:8px}aside>p,.legend,.best,aside>.eyebrow{display:none}.level-picker{margin:15px 0 0;display:flex;gap:10px}.level-picker>.label{display:none}.level{padding:12px}.level strong{font-size:13px;margin-left:6px}.level small{padding-left:0;font-size:8px}.hud{gap:14px;padding:0 12px}.touch{display:flex;gap:10px}.touch button{flex:1;background:#203e47;border:1px solid #47646c;border-radius:8px;padding:15px;touch-action:none}.controls{gap:10px;font-size:9px}footer{font-size:7px;letter-spacing:1px}.overlay-card{padding:20px}.overlay-card h2{font-size:28px}}
 
 /* Subtle night-sky accents over the original dark interface. */
@@ -130,28 +134,100 @@ body,body[data-world] { background: radial-gradient(ellipse at 18% 8%,#acc7ae16,
 @media(max-width:380px){.brandmark { display: none; }.journey-steps li { font-size: 7px; }.journey-steps .is-cleared::after { display: none; }}
 @media(prefers-reduced-motion:reduce){.level-banner { animation: none; }}
 
-</style></head>
-<body><header><a class="brand" href="#game-screen"><span class="brandmark">◈</span> ROLLING SKY</a><span class="edition">THE MOONLIT GARDENS / PIXEL EDITION</span><a class="atlas-link" href="#garden-atlas">8 GARDENS ↓</a><button id="sound" aria-pressed="false">Audio off</button></header>
-<main><aside id="garden-atlas"><div class="eyebrow">A LITTLE FOCUS. A LONG WAY UP.</div><h1>Small steps.<br>Wild wonders.<br><em>Pure magic.</em></h1><p>A trail of tiny wonders.<br>One bright little sphere. One perfect run.</p><div class="field-guide"><span>FIELD NOTES / THE LITTLE WILD</span><canvas id="field-guide" width="300" height="104" aria-label="Pixel-art ducks and frogs among flowers and lily pads"></canvas></div><p class="guide-caption">Mind the ducks. Follow the starlight.</p><div class="journey-heading"><span class="label">THE GARDEN ATLAS</span><span id="campaign-count">0 / 8 CLEARED</span></div>
-<div class="level-picker" aria-label="Choose one of eight gardens">
-<button class="level active" data-level="0" aria-pressed="true"><span class="level-number"><canvas data-symbol="0" width="32" height="32" aria-hidden="true"></canvas><b>01</b></span><span class="level-caption"><strong>Azure ascent</strong><small>CALM</small></span></button>
-<button class="level" data-level="1" aria-pressed="false"><span class="level-number"><canvas data-symbol="1" width="32" height="32" aria-hidden="true"></canvas><b>02</b></span><span class="level-caption"><strong>Violet velocity</strong><small>FOCUSED</small></span></button>
-<button class="level" data-level="2" aria-pressed="false"><span class="level-number"><canvas data-symbol="2" width="32" height="32" aria-hidden="true"></canvas><b>03</b></span><span class="level-caption"><strong>Amber orchard</strong><small>BRISK</small></span></button>
-<button class="level" data-level="3" aria-pressed="false"><span class="level-number"><canvas data-symbol="3" width="32" height="32" aria-hidden="true"></canvas><b>04</b></span><span class="level-caption"><strong>Jade sanctuary</strong><small>CHALLENGING</small></span></button>
-<button class="level" data-level="4" aria-pressed="false"><span class="level-number"><canvas data-symbol="4" width="32" height="32" aria-hidden="true"></canvas><b>05</b></span><span class="level-caption"><strong>Coral tide</strong><small>INTENSE</small></span></button>
-<button class="level" data-level="5" aria-pressed="false"><span class="level-number"><canvas data-symbol="5" width="32" height="32" aria-hidden="true"></canvas><b>06</b></span><span class="level-caption"><strong>Frostpetal pass</strong><small>EXPERT</small></span></button>
-<button class="level" data-level="6" aria-pressed="false"><span class="level-number"><canvas data-symbol="6" width="32" height="32" aria-hidden="true"></canvas><b>07</b></span><span class="level-caption"><strong>Ember lanterns</strong><small>MASTER</small></span></button>
-<button class="level" data-level="7" aria-pressed="false"><span class="level-number"><canvas data-symbol="7" width="32" height="32" aria-hidden="true"></canvas><b>08</b></span><span class="level-caption"><strong>Starlit crown</strong><small>FINALE</small></span></button>
+</style><style data-source="home.css">
+/* A quiet start screen: a painted trail, one selected garden and one play action. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.home-screen,.game-section{display:none}
+body.at-home{background:radial-gradient(ellipse at 50% 12%,#456e6950,transparent 65%),linear-gradient(155deg,#162e40,#243e4e 65%,#2d4b55);min-height:100svh}
+body.at-home header{height:64px;max-width:1120px;padding:0 24px;margin:0 auto;border-bottom:1px solid #abc9b52b;gap:22px}
+body.at-home header .edition{margin-left:auto;font-size:8px;letter-spacing:1.2px;color:#afc8bd}
+body.at-home header #sound{min-height:40px;margin-left:0;font-size:10px}
+main,body.playing main{display:block;max-width:none;margin:0;padding:0}
+body.at-home .home-screen{display:block;width:min(1120px,calc(100% - 48px),max(480px,calc((100svh - 280px)*1.77778)));margin:14px auto 0}
+.home-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.home-title .eyebrow{font-size:7px;letter-spacing:1.5px;color:#c4d0b2}
+.home-title h1{font-family:'Courier New',monospace;font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-1px;margin:4px 0 0;color:#ece3bc;text-shadow:2px 3px #102b3a}
+.home-title #campaign-count{font-size:8px;letter-spacing:.5px;color:#b9ccb7;white-space:nowrap;border:1px solid #88a49966;padding:8px 10px;background:#19364599;box-shadow:inset 0 1px #d6dfbf22}
+.atlas-board{position:relative;width:100%;aspect-ratio:16/9;background:#244b5b;border:2px solid #8aa89c;box-shadow:0 0 0 4px #193543,5px 6px #102b3b,0 18px 45px #0a223755;isolation:isolate}
+.atlas-board>canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.map-stops{position:absolute;inset:0;pointer-events:none}
+.map-stop{position:absolute;width:clamp(44px,7%,76px);aspect-ratio:1;transform:translate(-50%,-50%);padding:0;margin:0;border:0;background:transparent;border-radius:50%;pointer-events:auto;touch-action:manipulation}
+.map-stop:hover{background:#f2dfb514;box-shadow:0 0 0 2px #ffe9b955}
+.map-stop:focus-visible{outline:2px dashed #fff0bd;outline-offset:2px;background:#f4e7bd22}
+.map-corner{position:absolute;z-index:2;pointer-events:none;width:15px;height:15px;border:3px solid #e4d8a9;border-right:0;border-bottom:0;box-shadow:2px 2px #193a4388}
+.map-corner-tl{left:-2px;top:-2px}.map-corner-br{right:-2px;bottom:-2px;transform:rotate(180deg)}
+.selection-dock{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:14px;padding:12px 14px;background:linear-gradient(105deg,#23444cf7,#1c3546f7);border:1px solid #91ada066;box-shadow:inset 0 2px #d7dfb922,3px 3px #112d3c}
+.selected-garden{display:flex;align-items:center;gap:12px;min-width:0}
+.selected-garden>canvas{width:48px;height:48px;image-rendering:pixelated;flex:none}
+.selection-number{display:block;color:#b8c9b4;font-size:7px;letter-spacing:1px}
+.selected-garden h2{font:800 18px/1.2 'Courier New',monospace;color:#f0e0b9;letter-spacing:-.5px;margin:4px 0}
+.difficulty-chip{display:block;color:#9ec7ad;font-size:7px;letter-spacing:1.2px}
+.home-play{flex:none;min-width:192px;min-height:50px;padding:13px 16px;text-align:left;background:#e8d39b;color:#304746;border:1px solid #fff1c7;box-shadow:inset 0 2px #fff2cd,0 4px #8c7d58;font:800 11px 'Courier New',monospace;letter-spacing:.8px}
+.home-play:hover{background:#f3e3b5;transform:translateY(-1px)}.home-play:active{transform:translateY(2px);box-shadow:inset 0 1px #dbc28b,0 2px #8c7d58}
+.home-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 2px 0}
+.quick-controls{display:flex;align-items:center;gap:5px;color:#b4c8bb;font:9px 'Courier New',monospace}
+.quick-controls>span{margin:0 3px;color:#7b9b91}.quick-controls kbd{padding:3px 4px;font-size:9px;border-color:#82a39888}
+.home-help{position:relative}
+.home-help summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;font:9px 'Courier New',monospace;color:#c4d0bc}
+.home-help summary::-webkit-details-marker{display:none}
+.home-help summary>span{display:grid;place-items:center;border:1px solid #9db59b88;width:22px;height:22px;color:#e6d5a5;font-size:11px;background:#24464d}
+.home-help summary:focus-visible{outline:2px solid #ecd8a5;outline-offset:5px}
+.help-sheet{position:absolute;bottom:calc(100% + 12px);right:0;width:min(340px,calc(100vw - 42px));max-height:calc(100svh - 90px);overflow:auto;z-index:10;padding:18px;background:#1b3948;border:2px solid #a2b899;box-shadow:inset 0 2px #e1dcbb33,5px 6px #102b3c,0 16px 35px #0c243d88}
+.help-sheet h2{font:800 17px 'Courier New',monospace;color:#e9d7aa;margin:0 0 12px}
+.help-sheet p{font:10px/1.7 'Courier New',monospace;color:#bdcfc1;margin:10px 0}.help-sheet b{color:#ead9b5}
+.help-route{padding-top:12px;border-top:1px solid #a1b99a44}.help-route>span{color:#e5c5a5;font-size:8px;letter-spacing:1px}.help-route p{font-size:9px}
+.help-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 0;padding-top:12px;border-top:1px solid #a1b99a44}
+.help-stats dt{font-size:7px;letter-spacing:.5px;color:#9fbaae}.help-stats dd{font:800 12px 'Courier New',monospace;margin:5px 0 0;color:#e7d5ad}
+body.at-home footer{display:flex;justify-content:center;max-width:1120px;margin:13px auto 10px;padding:0 24px;font-size:6px;letter-spacing:.7px;color:#91ada3}
+body.in-game header,body.in-game footer{display:none}
+body.in-game main{display:block;padding:8px}
+body.in-game .game-section{display:block;position:relative;top:auto;margin:0 auto;width:min(100%,calc((100svh - 180px)*.83333),650px)}
+@media(max-width:760px){body.at-home header{height:58px;padding:0 18px;gap:12px}body.at-home header .edition{display:none}body.at-home #sound{margin-left:auto}.home-title h1{font-size:25px}.home-title #campaign-count{font-size:7px;padding:7px}.selected-garden h2{font-size:16px}.home-play{min-width:160px;font-size:10px}.selection-dock{gap:12px;padding:11px}.selected-garden{gap:9px}.selected-garden>canvas{width:40px;height:40px}body.in-game .game-section{width:min(100%,calc((100svh - 245px)*.83333))}}
+@media(max-width:640px){body.at-home .home-screen{width:calc(100% - 28px);margin-top:12px}.atlas-board{aspect-ratio:30/41}.home-title{margin-bottom:12px}.home-title h1{font-size:24px}.home-title .eyebrow{font-size:6px;letter-spacing:1px}.selection-dock{margin-top:12px;min-height:78px}.home-play{min-width:130px;padding:12px 10px;font-size:9px;letter-spacing:.3px}.selected-garden h2{font-size:14px}.selected-garden>canvas{width:36px;height:36px}.selection-number,.difficulty-chip{font-size:6px;letter-spacing:.6px}.home-bottom{padding-top:12px}.quick-controls{font-size:8px}.home-help summary{font-size:8px}.map-stop{width:13%;min-width:44px}}
+@media(max-width:360px){.home-title h1{font-size:21px}.home-title #campaign-count{padding:6px;font-size:6px}.home-play{min-width:112px;font-size:8px}.selected-garden h2{font-size:12px}.selected-garden{gap:6px}.selected-garden>canvas{width:32px;height:32px}.selection-dock{gap:8px;padding:10px}.quick-controls{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.home-play{transition:none}.home-play:hover{transform:none}}
+
+</style>
+
+</head>
+<body class="at-home">
+<header><a class="brand" href="#garden-atlas"><span class="brandmark">◈</span> ROLLING SKY</a><span class="edition">MOONLIT GARDENS</span><button id="sound" aria-pressed="false">Audio off</button></header>
+<main>
+<section id="garden-atlas" class="home-screen" aria-label="Choose a garden">
+<div class="home-title"><div><span class="eyebrow">CHOOSE A GARDEN</span><h1>Moonlit Gardens</h1></div><span id="campaign-count">0 / 8 CLEARED</span></div>
+<div class="atlas-board">
+<canvas id="atlas-map" width="960" height="540" aria-label="Illustrated garden trail connecting eight selectable levels"></canvas>
+<div class="map-stops" aria-label="Select a level">
+<button class="map-stop active" data-level="0" aria-pressed="true" title="Level 1 · Azure ascent" style="left:11.458333333333332%;top:62.96296296296296%"><span class="sr-only">Level 01 · Azure ascent</span></button>
+<button class="map-stop" data-level="1" aria-pressed="false" title="Level 2 · Violet velocity" style="left:30.208333333333332%;top:74.62962962962963%"><span class="sr-only">Level 02 · Violet velocity</span></button>
+<button class="map-stop" data-level="2" aria-pressed="false" title="Level 3 · Amber orchard" style="left:45.83333333333333%;top:50%"><span class="sr-only">Level 03 · Amber orchard</span></button>
+<button class="map-stop" data-level="3" aria-pressed="false" title="Level 4 · Jade sanctuary" style="left:65.625%;top:74.07407407407408%"><span class="sr-only">Level 04 · Jade sanctuary</span></button>
+<button class="map-stop" data-level="4" aria-pressed="false" title="Level 5 · Coral tide" style="left:87.5%;top:57.407407407407405%"><span class="sr-only">Level 05 · Coral tide</span></button>
+<button class="map-stop" data-level="5" aria-pressed="false" title="Level 6 · Frostpetal pass" style="left:79.16666666666666%;top:24.074074074074073%"><span class="sr-only">Level 06 · Frostpetal pass</span></button>
+<button class="map-stop" data-level="6" aria-pressed="false" title="Level 7 · Ember lanterns" style="left:55.729166666666664%;top:17.59259259259259%"><span class="sr-only">Level 07 · Ember lanterns</span></button>
+<button class="map-stop" data-level="7" aria-pressed="false" title="Level 8 · Starlit crown" style="left:29.166666666666668%;top:25.925925925925924%"><span class="sr-only">Level 08 · Starlit crown</span></button>
 </div>
-<article class="route-journal" aria-live="polite"><span class="label" id="level-region">LUMINOUS WETLANDS</span><h2 id="level-title">Azure ascent</h2><p id="level-description">Follow a limestone trail through luminous ponds and flowering reeds.</p><p class="level-destination" id="level-next">NEXT · 02 / VIOLET VELOCITY</p>
-<dl><div><dt>PACE</dt><dd id="level-difficulty">CALM</dd></div><div><dt>RUN TIME</dt><dd id="level-duration">~29s</dd></div><div><dt>BEST GEMS</dt><dd id="level-gems" title="Most diamonds in one run / total available">0</dd></div><div><dt>YOUR BEST</dt><dd id="level-best">—</dd></div></dl>
-<p class="field-tip"><span>RANGER'S NOTE</span><span id="level-tip">Learn the rhythm: steer around tall obstacles and jump only the gaps.</span></p><button id="play-selected" class="journal-play">Roll through this garden →</button></article>
-<details class="field-manual"><summary>HOW TO READ THE GARDEN</summary><p>Steer with ← →. Jump with ↑. Forward movement is automatic.</p><p><b>Gold sphere:</b> you. <b>Cyan diamonds:</b> +100 points. <b>Amber corners:</b> solid hazards. <b>Striped dark breaks:</b> gaps to jump or avoid.</p><p>Grass and carved mosaics are safe floor. Tall bushes, stones, crystals and ducks must be dodged, even during a jump. Nightfall dims the garden; crosswinds shift the track.</p><p>Every garden is open. Clear a route to earn its atlas stamp, then continue to the next. Your current level is marked in gold; cleared gardens have a stamp. After a win, the large button names your next level. Enter continues; Space replays. P pauses.</p></details>
-<div class="legend"><span><i class="block"></i> Dodge obstacles</span><span><i class="diamond"></i> Collect diamonds</span><span><i class="gap"></i> Jump gaps</span></div><div class="best">PERSONAL BEST <strong id="best">00000</strong></div></aside>
+<div class="map-corner map-corner-tl" aria-hidden="true"></div><div class="map-corner map-corner-br" aria-hidden="true"></div>
+</div>
+<div class="selection-dock">
+<div class="selected-garden" aria-live="polite"><canvas id="selected-seal" width="32" height="32" aria-hidden="true"></canvas><div><span class="selection-number" id="selection-number">LEVEL 01 / 08</span><h2 id="level-title">Azure ascent</h2><span id="level-difficulty" class="difficulty-chip">CALM</span></div></div>
+<button id="play-selected" class="home-play">PLAY LEVEL 01 <span>→</span></button>
+</div>
+<div class="home-bottom"><span class="quick-controls"><kbd>←</kbd><kbd>→</kbd> steer <span>·</span> <kbd>↑</kbd> jump</span>
+<details class="home-help"><summary>How to play <span>?</span></summary><div class="help-sheet">
+<h2>A little field guide</h2><p>← → to steer. ↑ to jump. P to pause.</p><p>Collect cyan diamonds. Dodge solid obstacles. Jump the striped gaps.</p>
+<p><b>After a win:</b> Enter continues to the next garden. Space replays.</p>
+<div class="help-route"><span id="level-region">LUMINOUS WETLANDS</span><p id="level-description">Follow a limestone trail through luminous ponds and flowering reeds.</p><p id="level-tip">Steer around obstacles. Jump the gaps.</p><p id="level-next">NEXT · 02 / VIOLET VELOCITY</p></div>
+<dl class="help-stats"><div><dt>RUN TIME</dt><dd id="level-duration">~29s</dd></div><div><dt>BEST GEMS</dt><dd id="level-gems">0</dd></div><div><dt>LEVEL BEST</dt><dd id="level-best">—</dd></div><div><dt>PERSONAL BEST</dt><dd id="best">00000</dd></div></dl>
+</div></details></div>
+</section>
 <section id="game-screen" class="game-section" aria-label="Rolling Sky game"><div class="hud"><div><span class="label">SCORE</span><strong id="score">00000</strong></div><div class="route"><span class="current-level" id="current-level">LEVEL 01 / 08</span><span id="route-name">AZURE ASCENT</span><div class="progress" role="progressbar" aria-label="Level progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="progress"></i></div></div><div><span class="label">DISTANCE</span><strong id="percent">0%</strong></div><div class="gem-counter"><span class="label">GEMS</span><strong id="diamonds">0◇</strong></div><button id="pause" aria-label="Pause game">Ⅱ</button></div>
 <div class="journey-strip"><div><strong id="journey-current">LEVEL 01 OF 08</strong><span id="journey-next">NEXT 02 · VIOLET VELOCITY</span></div><ol class="journey-steps" aria-label="Your journey through eight levels"><li data-step="0">01</li><li data-step="1">02</li><li data-step="2">03</li><li data-step="3">04</li><li data-step="4">05</li><li data-step="5">06</li><li data-step="6">07</li><li data-step="7">08</li></ol></div>
 <div class="stage"><div id="level-banner" class="level-banner" aria-live="polite" hidden><span>YOUR NEXT ADVENTURE</span><strong id="banner-title">LEVEL 01 · AZURE ASCENT</strong><small>Collect diamonds. Dodge hazards. Reach 100%.</small></div><canvas id="game" width="600" height="720" aria-label="2D top-down Rolling Sky obstacle course"></canvas><div id="overlay"><div class="overlay-card"><span id="screen-label" class="eyebrow">THE LITTLE WILD AWAITS</span><div class="orb" aria-hidden="true"><canvas id="hero-portrait" width="48" height="48"></canvas></div><h2 id="screen-title">Rolling Sky</h2><p id="screen-copy">← → to steer. ↑ to jump.<br>Collect diamonds. Reach the finish.</p><p id="run-summary" class="run-summary" hidden></p><button id="next-route" class="secondary" hidden>PLAY LEVEL 02 · VIOLET VELOCITY →</button><button id="start" class="primary">Let’s roll <span>↗</span></button><button id="back-map" class="text-button" hidden>Garden atlas</button><small id="screen-hint">← → TO STEER · ↑ TO JUMP</small></div></div><div class="stage-tag"><span id="challenge">01 / 8 · LUMINOUS WETLANDS</span><span id="speed">1.0×</span></div></div>
-<div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Steer</span><span><kbd>↑</kbd> Jump</span><span><kbd>P</kbd> Pause</span><span><kbd>SPACE</kbd> Restart after a run</span></div><div class="touch"><button data-key="ArrowLeft" aria-label="Move left">←</button><button data-key="ArrowUp" aria-label="Jump">↑ JUMP</button><button data-key="ArrowRight" aria-label="Move right">→</button></div></section></main><footer><span>KEEP MOVING. KEEP LOOKING UP.</span><span>DESIGN & FOUNDATION: SHARON5U · 2D FINISH: DIEGO</span></footer><script data-source="engine.js">
+<div class="controls"><span><kbd>←</kbd><kbd>→</kbd> Steer</span><span><kbd>↑</kbd> Jump</span><span><kbd>P</kbd> Pause</span><span><kbd>SPACE</kbd> Restart after a run</span></div><div class="touch"><button data-key="ArrowLeft" aria-label="Move left">←</button><button data-key="ArrowUp" aria-label="Jump">↑ JUMP</button><button data-key="ArrowRight" aria-label="Move right">→</button></div></section>
+</main>
+<footer><span>ORIGINAL GAME: SHARON5U · GARDEN EDITION: DIEGO</span></footer>
+<script data-source="engine.js">
 /* Pure gameplay rules, shared by the renderer and the tests. Coordinates are world pixels. */
 (function (root) {
   'use strict';
@@ -907,8 +983,154 @@ body,body[data-world] { background: radial-gradient(ellipse at 18% 8%,#acc7ae16,
     for(let i=0;i<6;i++)flower(c,12+i*54,92-i%2*6,theme,i);
     spark(c,93,24,theme.glow,2);spark(c,205,72,theme.glow,2);c.restore();
   }
-  const api={THEMES,rect,micro,thread,fern,emblem,oval,spark,flower,backdrop,tile,frieze,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
+  const api={THEMES,rect,micro,thread,fern,emblem,oval,spark,flower,lily,frog,fish,backdrop,tile,frieze,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
   if(typeof module!=='undefined')module.exports=api;root.SkyPixelArt=api;
+})(typeof window!=='undefined'?window:globalThis);
+
+</script>
+<script data-source="atlas-art.js">
+/* A painted top-down garden atlas. This layer has no gameplay or unlocking rules. */
+(function(root){
+  'use strict';
+  const P=typeof module!=='undefined'?require('./pixel-art'):root.SkyPixelArt;
+  const LAYOUTS={
+    wide:{width:960,height:540,nodes:[[110,340],[290,403],[440,270],[630,400],[840,310],[760,130],[535,95],[280,140]]},
+    tall:{width:600,height:820,nodes:[[125,690],[410,710],[460,490],[190,520],[130,310],[410,300],[420,115],[160,110]]}
+  };
+  const DIGITS=[
+    ['111','101','101','101','111'],['010','110','010','010','111'],
+    ['111','001','111','100','111'],['111','001','111','001','111'],
+    ['101','101','111','001','001'],['111','100','111','001','111'],
+    ['111','100','111','101','111'],['111','001','010','010','010'],
+    ['111','101','111','101','111'],['111','101','111','001','111']
+  ];
+  const mix=(a,b,f)=>{
+    const c=parseInt(a.slice(1),16),d=parseInt(b.slice(1),16);
+    return '#'+[16,8,0].map(s=>Math.round(((c>>s)&255)*(1-f)+((d>>s)&255)*f).toString(16).padStart(2,'0')).join('');
+  };
+  function digits(c,value,x,y,color){
+    [...value].forEach((digit,i)=>DIGITS[Number(digit)].forEach((row,py)=>[...row].forEach((on,px)=>{
+      if(on==='1')P.micro(c,x+(i*4+px)*3,y+py*3,3,3,color);
+    })));
+  }
+  function route(layout){
+    const nodes=layout.nodes,points=[];
+    for(let segment=0;segment<nodes.length-1;segment++){
+      const a=nodes[Math.max(0,segment-1)],b=nodes[segment],d=nodes[segment+1],e=nodes[Math.min(nodes.length-1,segment+2)];
+      const count=Math.ceil(Math.hypot(d[0]-b[0],d[1]-b[1])/4);
+      for(let j=0;j<count;j++){
+        const t=j/count,t2=t*t,t3=t2*t;
+        const axis=k=>.5*((2*b[k])+(-a[k]+d[k])*t+(2*a[k]-5*b[k]+4*d[k]-e[k])*t2+(-a[k]+3*b[k]-3*d[k]+e[k])*t3);
+        points.push({x:axis(0),y:axis(1),segment});
+      }
+    }
+    points.push({x:nodes.at(-1)[0],y:nodes.at(-1)[1],segment:6});return points;
+  }
+  function bamboo(c,x,y,t){
+    for(const dx of [-9,0,10]){
+      P.rect(c,x+dx,y-22,4,45,t.leaf[1]);P.micro(c,x+dx,y-21,1,42,t.leaf[3]);
+      for(let n=0;n<4;n++){P.rect(c,x+dx-2,y-16+n*10,8,2,t.leaf[0]);P.thread(c,x+dx+2,y-12+n*9,x+dx+14,y-20+n*9,t.leaf[2]);}
+    }
+  }
+  function lantern(c,x,y,t){
+    P.thread(c,x-4,y+21,x-4,y-28,t.leaf[0]);P.thread(c,x-4,y-28,x+8,y-28,t.leaf[1]);
+    P.thread(c,x+8,y-28,x+8,y-21,'#b1b49a');P.rect(c,x,y-20,16,20,'#986e73');
+    P.rect(c,x+2,y-18,12,16,'#d9a080');P.rect(c,x+6,y-18,4,16,'#f9d9a1');
+    P.micro(c,x+1,y-21,14,1,'#e6c995');P.micro(c,x+1,y,14,1,'#e6c995');P.thread(c,x+8,y+1,x+8,y+8,'#d2a48a');
+  }
+  function paint(c,layout,journal){
+    const {width:w,height:h,nodes}=layout,points=route(layout);
+    c.save();c.imageSmoothingEnabled=false;
+    for(let y=0;y<h;y+=6)P.rect(c,0,y,w,6,mix('#133449','#3f7279',Math.round(y/h*20)/20));
+    for(let i=0;i<240;i++){
+      const x=(i*137+31)%w,y=(i*83+17)%h;
+      P.rect(c,x,y,8+i%4*5,2,i%2?'#a7d5c51c':'#071f3522');
+      if(i%3===0)P.micro(c,x+3,y+4,6,1,'#a5d6cc30');
+    }
+    // Irregular shoreline at the edges frames a continuous ribbon of garden land.
+    for(const side of [0,1])for(let y=-12;y<h+20;y+=6){
+      const width=13+Math.sin(y*.023)*9+Math.sin(y*.061)*5,x=side?w-width:0;
+      P.rect(c,side?x-4:0,y,width+4,6,'#142f3d');P.rect(c,x,y,width,6,'#355e57');
+    }
+    for(const p of points)P.oval(c,p.x+1,p.y+7,53,43,'#102d3f77');
+    for(const p of points)P.oval(c,p.x,p.y,50,41,'#234b4b');
+    for(const p of points)P.oval(c,p.x,p.y-2,46,37,'#52806a');
+    for(const p of points)P.oval(c,p.x,p.y-3,39,31,'#769879');
+    for(let i=0;i<points.length;i+=8){
+      const p=points[i],next=points[Math.min(points.length-1,i+1)],angle=Math.atan2(next.y-p.y,next.x-p.x)+Math.PI/2;
+      for(const sign of [-1,1]){
+        const px=p.x+Math.cos(angle)*37*sign,py=p.y+Math.sin(angle)*31*sign;
+        P.rect(c,px,py,3,5,'#355e51');P.micro(c,px-1,py,4,1,'#b4c393');
+        if(i%24===0)P.flower(c,px,py,P.THEMES[Math.floor(i/24)%8],i);
+      }
+    }
+    // Small stone pavers follow the bends rather than forming a straight menu grid.
+    for(const p of points)P.oval(c,p.x,p.y,14,13,'#50685d');
+    for(const p of points)P.oval(c,p.x,p.y-1,11,10,'#c7bc91');
+    for(let i=0;i<points.length;i+=4){
+      const p=points[i],clear=journal[p.segment]?.cleared;
+      P.rect(c,p.x-6,p.y-4,11,6,clear?'#a0ba8c':'#ded0a4');P.micro(c,p.x-5,p.y-4,8,1,'#f5e5b9');
+      P.micro(c,p.x+4,p.y,1,3,'#7d8b6d');
+    }
+    // Eight hand-built garden pockets surround their selectable stone seals.
+    nodes.forEach(([x,y],i)=>{
+      const t=P.THEMES[i];P.oval(c,x,y,51,42,t.leaf[0]);P.oval(c,x,y-2,48,39,t.grass[1]);
+      P.oval(c,x-5,y-8,41,31,t.grass[2]+'66');
+      const props=[[-44,-22],[40,27],[-34,34],[39,-31]];
+      props.forEach(([dx,dy],n)=>{
+        c.save();c.translate(Math.round(x+dx),Math.round(y+dy));
+        if(i===3&&n%2===0)bamboo(c,0,0,t);
+        else if(i===6&&n===3)lantern(c,0,0,t);
+        else if((i===5||i===7)&&n%2===0)P.peak(c,i,0,true);
+        else if(n===2&&i%2)P.rock(c,i,i);
+        else if(n<2)P.tree(c,i,n+i);
+        else P.fern(c,0,0,t,i+n);
+        c.restore();
+      });
+      for(let n=0;n<10;n++){
+        const a=n/10*Math.PI*2,px=x+Math.cos(a)*42,py=y+Math.sin(a)*35;
+        P.flower(c,px,py,t,n);
+      }
+      P.oval(c,x+2,y+5,32,31,'#18374788');P.oval(c,x,y,32,31,t.stone[0]);
+      P.oval(c,x,y-2,29,28,t.stone[2]);P.oval(c,x,y-2,26,25,t.stone[1]);
+      c.save();c.translate(x-16,y-22);P.emblem(c,i);c.restore();
+      digits(c,String(i+1).padStart(2,'0'),x-10,y+10,'#f9edcc');
+      if(journal[i]?.cleared){
+        P.oval(c,x+24,y-23,9,8,'#244e47');P.thread(c,x+19,y-23,x+23,y-19,'#e2eac0');P.thread(c,x+23,y-19,x+29,y-26,'#e2eac0');
+      }
+    });
+    const ponds=layout===LAYOUTS.wide?[[65,142],[505,470],[897,75],[900,470]]:[[50,440],[540,610],[55,70],[335,795]];
+    ponds.forEach(([x,y],i)=>{
+      P.lily(c,x,y,P.THEMES[i%2],i%2===0);
+      if(i===0)P.frog(c,x,y-3,P.THEMES[0],false);
+      if(i===1){c.save();c.translate(x+40,y+4);P.duck(c,1.2,0,true);c.restore();}
+      if(i===2)P.fish(c,x-12,y+29,0,false);
+    });
+    for(let i=0;i<35;i++){
+      const x=(i*179+29)%w,y=(i*101+51)%h;
+      if(points.every(p=>Math.hypot(p.x-x,p.y-y)>72)){
+        P.lily(c,x,y,P.THEMES[i%2],i%6===0);
+        if(i%5===0)P.fish(c,x+18,y+22,0,i%2===0);
+      }
+    }
+    c.restore();
+  }
+  function animate(c,layout,selected,time,reduced){
+    c.save();const t=reduced?0:time,[x,y]=layout.nodes[selected];
+    for(let i=0;i<22;i++){
+      const px=(i*173+55)%layout.width,py=(i*107+29)%layout.height;
+      c.globalAlpha=reduced?.5:.28+(.5+.5*Math.sin(t*1.3+i))*.4;P.spark(c,px,py,'#d8e5b0',1);
+    }
+    c.globalAlpha=1;
+    for(let i=0;i<4;i++){
+      const angle=i/4*Math.PI*2+Math.PI/4;
+      P.spark(c,x+Math.cos(angle)*37,y+Math.sin(angle)*34,'#f5db9e',2);
+    }
+    P.ring(c,x,y-1,35,'#f2d39cbb',2);
+    const lift=reduced?0:Math.round(Math.sin(t*2.2)*2);
+    P.oval(c,x,y-35,9,3,'#17364477');c.translate(x,y-47+lift);P.orb(c,0,.4);c.restore();
+  }
+  const api={LAYOUTS,route,paint,animate};if(typeof module!=='undefined')module.exports=api;root.SkyAtlas=api;
 })(typeof window!=='undefined'?window:globalThis);
 
 </script>
@@ -942,6 +1164,9 @@ function updateJournal(){
   const seconds=Math.round(level.length/level.acceleration*Math.log(1+level.acceleration/level.speed));
   $('level-duration').textContent='~'+seconds+'s';$('level-gems').textContent=journal[selected].gems+' / '+total;
   $('level-best').textContent=journal[selected].best?String(journal[selected].best):'—';$('level-tip').textContent=level.tip;
+  $('selection-number').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0');
+  $('play-selected').textContent='PLAY LEVEL '+String(selected+1).padStart(2,'0')+' →';
+  selectedSealCtx.clearRect(0,0,32,32);SkyPixelArt.emblem(selectedSealCtx,selected);
   const next=nextGarden(),destination=next===null?'ALL GARDENS CLEARED':'NEXT '+String(next+1).padStart(2,'0')+' · '+E.LEVELS[next].name.toUpperCase();
   $('level-next').textContent=destination;$('journey-next').textContent=destination;
   $('journey-current').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' OF '+String(E.LEVELS.length).padStart(2,'0');
@@ -964,7 +1189,7 @@ function selectLevel(index){
   if(document.body?.dataset)document.body.dataset.world=String(selected);
   const theme=SkyPixelArt.THEMES[selected];
   document.body?.style?.setProperty('--world-top',theme.top);document.body?.style?.setProperty('--world-bottom',theme.bottom);
-  document.body?.classList.remove('playing','victory');
+  document.body?.classList.remove('playing','victory','in-game');document.body?.classList.add('at-home');
   $('route-name').textContent=E.LEVELS[selected].name.toUpperCase();
   overlay('GARDEN '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0'),E.LEVELS[selected].name,E.LEVELS[selected].description,'Let’s roll ↗','← → TO STEER · ↑ TO JUMP');
   updateHUD();updateJournal();
@@ -972,7 +1197,27 @@ function selectLevel(index){
 const PLAYER_Y=575;
 // Keep a full world-pixel canvas for fine engraved and feather details.
 canvas.width=600;canvas.height=720;ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;
-const guideCanvas=$('field-guide'),guideCtx=guideCanvas?.getContext('2d');
+const mapCanvas=$('atlas-map'),mapCtx=mapCanvas.getContext('2d'),selectedSealCtx=$('selected-seal').getContext('2d');
+const mapMedia=window.matchMedia('(max-width: 640px)');
+let mapLayout=mapMedia.matches?SkyAtlas.LAYOUTS.tall:SkyAtlas.LAYOUTS.wide,mapBase=null,mapKey='';
+function syncAtlas(){
+  mapLayout=mapMedia.matches?SkyAtlas.LAYOUTS.tall:SkyAtlas.LAYOUTS.wide;
+  mapCanvas.width=mapLayout.width;mapCanvas.height=mapLayout.height;mapCtx.imageSmoothingEnabled=false;mapBase=null;mapKey='';
+  document.querySelectorAll('[data-level]').forEach(b=>{
+    const [x,y]=mapLayout.nodes[Number(b.dataset.level)];
+    b.style.left=x/mapLayout.width*100+'%';b.style.top=y/mapLayout.height*100+'%';
+  });
+}
+mapMedia.addEventListener?.('change',syncAtlas);
+function drawHome(){
+  const key=mapLayout.width+':'+journal.map(j=>j.cleared?'1':'0').join('');
+  if(key!==mapKey&&typeof document.createElement==='function'){
+    mapBase=document.createElement('canvas');mapBase.width=mapLayout.width;mapBase.height=mapLayout.height;
+    SkyAtlas.paint(mapBase.getContext('2d'),mapLayout,journal);mapKey=key;
+  }
+  if(mapBase)mapCtx.drawImage(mapBase,0,0);else SkyAtlas.paint(mapCtx,mapLayout,journal);
+  SkyAtlas.animate(mapCtx,mapLayout,selected,artClock,reducedMotion);
+}
 const portrait=$('hero-portrait'),portraitCtx=portrait?.getContext('2d');
 let musicStep=-1;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1034,7 +1279,7 @@ function overlay(label, title, copy, button, hint) {
   $('next-route').hidden=true;$('back-map').hidden=mode==='ready';$('run-summary').hidden=true;
   $('overlay').classList.remove('hidden'); $('screen-label').textContent = label; $('screen-title').textContent = title; $('screen-copy').textContent = copy; $('start').textContent = button; $('screen-hint').textContent = hint;
 }
-function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); introRemaining=2.2;$('banner-title').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' · '+E.LEVELS[selected].name.toUpperCase();$('level-banner').hidden=false;updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
+function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing','in-game');document.body?.classList.remove('victory','at-home'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); introRemaining=2.2;$('banner-title').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' · '+E.LEVELS[selected].name.toUpperCase();$('level-banner').hidden=false;updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
 function pause() {
   if (mode === 'playing') { mode = 'paused';$('level-banner').hidden=true; keys.clear(); overlay('TAKE A BREATHER', 'Sky on standby.', 'Your run is right where you left it.', 'Continue ↗', 'P TO RESUME'); $('pause').textContent = '▶'; }
   else if (mode === 'paused') { mode = 'playing'; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ'; }
@@ -1072,9 +1317,10 @@ $('back-map').onclick=()=>{selectLevel(selected);$('garden-atlas').scrollIntoVie
 $('play-selected').onclick=start;
 $('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? 'Audio off' : 'Audio on'; $('sound').setAttribute('aria-pressed', !muted); beep(650, 0.1); };
 document.querySelectorAll('[data-level]').forEach(button=>button.onclick=()=>selectLevel(Number(button.dataset.level)));
+syncAtlas();
+document.body?.classList.add('at-home');
 const pendingGarden=journal.findIndex(j=>!j.cleared);
 if(pendingGarden>0)selectLevel(pendingGarden);else {updateJournal();updateHUD();}
-document.querySelectorAll('[data-symbol]').forEach(badge=>SkyPixelArt.emblem(badge.getContext('2d'),Number(badge.dataset.symbol)));
 function press(key, repeat = false) { if(key==='Enter'&&!repeat&&mode==='won')advanceGarden(); if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
 window.addEventListener('keydown', e => { if ((mode==='won'&&e.key==='Enter')||(['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key))) e.preventDefault(); press(e.key, e.repeat); });
 window.addEventListener('keyup', e => keys.delete(e.key));
@@ -1119,7 +1365,6 @@ function pavingRow(row){
 function draw() {
   const distance=state.distance,theme=SkyPixelArt.THEMES[selected];
   SkyPixelArt.backdrop(ctx,selected,distance,artClock,reducedMotion);
-  if(guideCtx && mode!=='playing' && mode!=='dying')SkyPixelArt.vignette(guideCtx,selected,artClock,reducedMotion);
   if(portraitCtx && mode!=='playing' && mode!=='dying'){
     portraitCtx.clearRect(0,0,48,48);portraitCtx.save();portraitCtx.translate(24,24);
     if(mode==='won')SkyPixelArt.medal(portraitCtx);else SkyPixelArt.orb(portraitCtx,reducedMotion?0:artClock*.4);
@@ -1187,10 +1432,13 @@ function frame(now) {
     }
     updateHUD();
   } else accumulator=0;
-  playMusic();updateEffects(dt);draw();drawEffects();
-  // Canvas only: score, progress, controls and result text remain fully readable.
-  const dim=E.darkness(state);
-  if(dim>0)drawFlashlight(dim);
+  playMusic();updateEffects(dt);
+  if(mode==='ready')drawHome();
+  else {
+    draw();drawEffects();
+    // Canvas only: score, progress, controls and result text remain fully readable.
+    const dim=E.darkness(state);if(dim>0)drawFlashlight(dim);
+  }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
