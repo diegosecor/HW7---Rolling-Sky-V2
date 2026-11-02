@@ -90,3 +90,19 @@ Actions: expanded the same 2D game from two to eight gardens, retaining the firs
 Review corrections: an initial alternative safe-lane sequence failed the level-three traversal check because it demanded abrupt crossings. The received safe-lane progression was restored while keeping the new course lengths and challenge cadence. The test controller now advances only after a hazard's actual collision footprint has passed. Expanding the projection checks exposed sub-picometer floating-point differences; the geometric checks now use a 1e-9 tolerance instead of exact equality. No failed traversal check was removed.
 
 Validation: all four test files pass, including simulated completion of all eight courses, campaign navigation, saved stamps, all-gardens victory and recovery from damaged storage. Pixel-art checks cover all eight palettes, paving sections and decorative motifs. Native-canvas images of all eight complete boards were rendered and visually reviewed. A bounded 48-row paving cache reduced the local native drawing sample from about 12.3 to 4.1 ms per frame; this is not a browser frame-rate measurement. Interactive browser layout, audio and touch still require a manual check. The original `SPEC.md` and `style.css` remain unchanged.
+
+## Clear next-level guidance and fine pixel-art finishing
+
+Original user prompt:
+
+> como se a que nivel paso, y agrega mas detalle, mas pixel art de alto nivel detallado y creativo para todo
+
+English translation:
+
+> How do I know which level I go to next? Also add more detail, with highly detailed and creative pixel art throughout the game.
+
+Actions: made progression explicit with a permanent numbered level label, an eight-step journey strip, CURRENT/NEXT/CLEARED atlas states, named next destinations and a brief level-arrival banner. Winning shows the completed level number and promotes a gold PLAY LEVEL button containing the next number and name. Enter continues; Space replays. Reloading selects the first unfinished garden, and clearing the final garden before the others offers an unfinished route. Added eight original illustrated garden seals to the atlas.
+
+The drawing surface now matches the 600 × 720 world, retaining broad two-pixel clusters while adding one-pixel finishing: porcelain-gold sphere shading, teal inlay, crystal facets, feather strokes, leaf veins, layered flowers, ferns, snails, mineral seams, medallion beading and carved gap edges. The static paving cache remains bounded to 48 rows. Steering, jumping, collisions and all eight course layouts were left unchanged.
+
+Validation: automated checks cover named destinations, the Enter shortcut, current-level labels, the first-unfinished recommendation on reload, final-garden continuation, storage recovery, all eight traversable courses and integer-grid artwork. Native-canvas renders were reviewed for all eight boards, all object categories, the field guide and eight seals. An overly contrasting feather pattern found in the enlarged art review was softened before completion. This is an offline drawing review; browser layout, audio and touch are not interactively verified.
