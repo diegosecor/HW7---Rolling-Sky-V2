@@ -79,5 +79,17 @@ assert.match(node('journey-next').textContent,/NEXT 04 · JADE SANCTUARY/);
 saved.set('sky-garden-journal','{invalid');
 const recovered={...sandbox};vm.createContext(recovered);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),recovered);
 assert.equal(node('campaign-count').textContent,'0 / 8 CLEARED','damaged storage does not break the game');
+// A portable preview must initialize from its own embedded scripts, after the UI.
+const portable=fs.readFileSync(__dirname+'/JUGAR.html','utf8');
+assert.ok(!/<(?:script|link)\b[^>]*(?:src|href)="(?!#)/i.test(portable),'portable game needs no sibling script or stylesheet');
+const embedded=[...portable.matchAll(/<script data-source="([^"]+)">([\s\S]*?)<\/script>/g)];
+assert.deepEqual(embedded.map(s=>s[1]),['engine.js','pixel-art.js','game.js']);
+assert.ok(portable.indexOf('<script data-source=')>portable.indexOf('id="start"'),'portable scripts run after the game interface exists');
+const standalone={...sandbox,matchMedia:()=>({matches:false}),addEventListener(){}};
+standalone.window=standalone;vm.createContext(standalone);
+for(const script of embedded)vm.runInContext(script[2],standalone,{filename:script[1]});
+vm.runInContext('draw();start();E.jump(state);last=1000;frame(1033);',standalone);
+assert.equal(vm.runInContext('mode',standalone),'playing');assert.ok(vm.runInContext('E.height(state)',standalone)>0);
+console.log('PASS: single-file JUGAR.html embeds its assets, initializes, starts, renders and jumps.');
 console.log('PASS: eight-garden atlas, named next route/Enter shortcut, current-level cues, continue on reload, return to map, per-route records, all-gardens victory and storage recovery.');
 console.log('PASS: orthographic 2D view, consistent tile scale, all eight routes, start/input/pause/restart, immediate collision stop, victory, gems, best score and music.');

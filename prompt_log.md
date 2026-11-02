@@ -120,3 +120,23 @@ English translation:
 Actions: strengthened the layered ground shadow and made its footprint shrink and soften with jump height. The sphere artwork now rises above its fixed ground anchor, revealing the shadow instead of covering it. Removed the old airborne ring and reduced trail brightness in the air so it does not wash out the shadow. This is a visual adjustment; jump timing, height, steering and collision rules remain unchanged.
 
 Validation: all four existing test files pass. Native-canvas previews of grounded, apex and descending poses were inspected, including shadow contrast on all eight garden palettes. Interactive browser playtesting was not performed.
+
+## Opening the game and a visualization error
+
+Original user prompts:
+
+> como lo abro no veo
+
+> me dice que hay un arror
+
+Reported message:
+
+> An error occurred inside the visualization
+
+English translations:
+
+> How do I open it? I cannot see it.
+
+> It says there is an error.
+
+Actions: verified that the local entry point and all six source assets exist and that all four test files pass. The reported message points to the chat's visualization wrapper, but no browser stack trace was available. Created a portable `JUGAR.html` containing all styles and scripts to avoid relying on sibling-asset loading in a preview. Scripts execute after the complete interface. Added a repeatable build step and startup/render/jump checks for the actual embedded scripts. Provided direct Chrome/Edge opening instructions. This does not claim that the chat's visualization wrapper itself has been repaired.

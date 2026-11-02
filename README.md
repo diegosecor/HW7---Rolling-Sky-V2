@@ -8,7 +8,9 @@ This version follows the original top-down 2D specification. It starts from the 
 
 ## Run
 
-Open `index.html` in a modern browser. Everything is local: no installation, dependencies, server, build step or internet connection is required.
+Open `JUGAR.html` in Chrome or Edge. This portable copy includes every stylesheet and script, so it does not depend on a preview loading sibling files. If a chat preview reports “An error occurred inside the visualization,” open the browser directly, press Ctrl+O and select `JUGAR.html`. Everything is local: no installation, dependencies, server or internet connection is required to play.
+
+`index.html` remains the editable entry point using the separate source files. After editing those files, regenerate the portable copy with `npm run portable`; `npm test` also rebuilds it automatically. The generated page initializes its scripts after the full interface exists.
 
 - Left / right arrows: steer.
 - Up: jump across gaps. Obstacles are tall and must be avoided.
