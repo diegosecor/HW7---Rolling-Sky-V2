@@ -2,8 +2,8 @@
 (function(root){
   'use strict';
   const THEMES=[
-    {name:'Luminous wetlands',top:'#152c46',bottom:'#336a78',water:'#244c65',ripple:'#82c7bd',glow:'#c4f3b1',petal:'#f5bbba',stone:['#244a64','#32667c','#528e99'],grass:['#234951','#39735f','#75a17c'],leaf:['#254b51','#42755c','#74a373','#bad297'],moss:'#a3c395'},
-    {name:'Moonflower garden',top:'#24223f',bottom:'#725d80',water:'#3e3d64',ripple:'#ada1d0',glow:'#f7dfa5',petal:'#e7b7d6',stone:['#3d426c','#62618b','#9a8aa9'],grass:['#2b4659','#456b70','#89a597'],leaf:['#294858','#4e6c75','#879c98','#c4cdb1'],moss:'#b8bfd0'}
+    {name:'Luminous wetlands',top:'#152c46',bottom:'#336a78',water:'#244c65',ripple:'#82c7bd',glow:'#c4f3b1',petal:'#f5bbba',stone:['#28495e','#4b7887','#8bb6b2'],grass:['#234951','#39735f','#75a17c'],leaf:['#254b51','#42755c','#74a373','#bad297'],moss:'#a3c395'},
+    {name:'Moonflower garden',top:'#24223f',bottom:'#725d80',water:'#3e3d64',ripple:'#ada1d0',glow:'#f7dfa5',petal:'#e7b7d6',stone:['#3f4263','#746e96','#bdadc2'],grass:['#2b4659','#456b70','#89a597'],leaf:['#294858','#4e6c75','#879c98','#c4cdb1'],moss:'#b8bfd0'}
   ];
   const colors=new Map();
   function blend(a,b,t){
@@ -65,12 +65,31 @@
       const width=10+(i%3)*6;
       rect(c,x,y,width,2,theme.ripple+'30');rect(c,x+4,y+4,width+8,2,theme.ripple+'18');
     }
-    // Garden-bank fragments stay outside the playable tiles and never affect collisions.
-    for(const side of [0,1])for(let i=0;i<8;i++){
-      const x=side?590-(i*13)%34:10+(i*11)%34,y=(i*121+scroll*.6)%920-100;
-      oval(c,x,y,22,27,theme.leaf[0]);oval(c,x-3,y-5,17,21,theme.leaf[1]);
-      for(let n=0;n<7;n++)rect(c,x-13+(n*11)%24,y-17+(n*13)%30,4,2,theme.leaf[2]);
-      if(i%2)flower(c,x-4,y-13,theme,i);
+    // Scalloped garden banks and overlapping reeds frame the water, outside the road.
+    for(const side of [0,1]){
+      for(let y=-8;y<728;y+=4){
+        const width=14+Math.round(8*Math.sin((y-scroll*.6)*.016)+6*Math.sin((y-scroll*.6)*.043));
+        const x=side?600-width:0;
+        rect(c,side?x-4:0,y,width+4,4,theme.ripple+'22');
+        rect(c,x,y,width,4,theme.leaf[0]);
+        rect(c,side?x+4:0,y,Math.max(2,width-4),4,theme.leaf[1]+'99');
+      }
+      for(let i=0;i<7;i++){
+        const x=side?590-(i*13)%20:10+(i*11)%20,y=(i*129+scroll*.6)%920-100;
+        for(let n=0;n<5;n++){
+          const px=x-8+n*4,py=y+(n%2)*6;
+          rect(c,px,py-14-n%3*4,2,24+n%3*4,theme.leaf[2]);
+          rect(c,px-4,py-8,6,2,theme.leaf[1]);rect(c,px+2,py-14,4,2,theme.leaf[3]);
+          if(n%3===0){rect(c,px-2,py-26,4,8,'#ab9a72');rect(c,px,py-26,2,4,'#e2c9a2');}
+        }
+        if(i%2)flower(c,x+10,y-5,theme,i);
+      }
+    }
+    // Submerged pebbles and reflected light vary both garden palettes.
+    for(let i=0;i<15;i++){
+      const x=i%2?526+(i*11)%60:12+(i*7)%60,y=(i*107+scroll*.7)%820-50;
+      oval(c,x,y,7+i%3*2,4+i%2*2,theme.ripple+'18');
+      rect(c,x-4,y-2,6,2,theme.ripple+'20');
     }
     for(let i=0;i<7;i++){
       const x=i%2?550+(i*9)%36:24+(i*11)%38,y=(110+i*119+scroll)%920-80;
@@ -97,30 +116,59 @@
   function tile(c,x,y,row,lane,index){
     const theme=THEMES[index],garden=lane===0||lane===4,palette=garden?theme.grass:theme.stone;
     const seed=((row*37+lane*13)%97+97)%97;
-    for(let strip=0;strip<10;strip++){
-      const f=strip/9,t=strip<5?f*.9:.45+(f-.5)*.25;
-      const shade=blend(palette[2],palette[0],Math.round(t*12)/12);
-      rect(c,x+2,y+2+strip*8,80,8,shade);
-    }
-    rect(c,x+4,y+2,76,2,palette[2]);rect(c,x+2,y+4,2,72,palette[1]);
-    rect(c,x+4,y+80,76,2,palette[0]);rect(c,x+80,y+4,2,76,palette[0]);
-    // Chipped corners, mineral flecks and moss remain attached to their world tile.
-    rect(c,x+2,y+2,4,4,'#192c44');rect(c,x+78,y+78,4,4,'#192c44');
-    for(let n=0;n<10;n++){
-      const px=8+(seed+n*23)%64,py=8+(seed*3+n*17)%66;
-      rect(c,x+px,y+py,n%3?2:4,2,n%2?palette[2]+'55':palette[0]+'66');
-    }
     if(garden){
-      for(let n=0;n<7;n++){const px=8+(seed+n*19)%66,py=10+(seed*3+n*13)%61;rect(c,x+px,y+py,2,6,palette[0]);rect(c,x+px-2,y+py+2,2,2,palette[2]);}
-      if((row+lane)%3===0)flower(c,x+18+seed%44,y+22+seed%32,theme,seed);
-      if((row+lane)%4===0){rect(c,x+48,y+57,12,8,theme.leaf[0]);rect(c,x+50,y+55,8,4,theme.petal);rect(c,x+51,y+54,2,2,'#fff0d6');}
-    }else if((row+lane)%5===0){
-      const hue=index?'#c8b6da':'#8fb8c0';
-      rect(c,x+34,y+32,16,2,hue+'66');rect(c,x+30,y+36,24,2,hue+'55');
-      rect(c,x+32,y+40,20,2,hue+'55');rect(c,x+36,y+44,12,2,hue+'44');
+      rect(c,x,y,84,84,palette[0]);
+      for(let strip=0;strip<7;strip++)rect(c,x+2,y+2+strip*12,80,12,blend(palette[1],palette[0],strip/12));
+      // Uneven soft grass islands, fine blades and little flower clusters.
+      for(let n=0;n<5;n++){
+        const px=12+(seed+n*29)%62,py=10+(seed*3+n*19)%66;
+        oval(c,x+px,y+py,9+n%3*3,5+n%2*2,palette[2]+'33');
+      }
+      for(let n=0;n<16;n++){
+        const px=6+(seed+n*19)%72,py=8+(seed*3+n*13)%68;
+        rect(c,x+px,y+py,2,4+n%2*2,n%3?palette[0]:palette[2]);
+        rect(c,x+px-2,y+py+2,2,2,palette[2]+'99');
+      }
+      if((row+lane)%3===0){flower(c,x+20+seed%40,y+24+seed%28,theme,seed);flower(c,x+14+seed%40,y+32+seed%28,theme,seed+1);}
+      // A scalloped stone edging separates garden strips from the central paving.
+      const edge=lane===0?x+76:x+2;
+      for(let n=0;n<7;n++){
+        rect(c,edge,y+n*12+2,6,8,palette[0]);
+        rect(c,edge,y+n*12,4,8,theme.stone[1]);rect(c,edge,y+n*12,4,2,theme.stone[2]);
+      }
+      return;
     }
-    if(seed%3===0){rect(c,x+6,y+70,12,4,theme.leaf[1]);rect(c,x+4,y+66,6,6,theme.moss);rect(c,x+12,y+72,10,2,theme.leaf[2]);}
-    if(seed%4===0){rect(c,x+54,y+8,14,2,palette[0]);rect(c,x+52,y+10,4,10,palette[0]);rect(c,x+48,y+20,6,2,palette[0]);}
+    // Cut limestone slabs: shaded joints, broken corners and a soft mineral grain.
+    rect(c,x,y,84,84,palette[0]);
+    const shift=(seed%3-1)*.04;
+    for(let strip=0;strip<10;strip++){
+      const shade=blend(palette[2],palette[1],Math.max(0,Math.min(1,.25+strip*.052+shift)));
+      rect(c,x+4,y+4+strip*8,76,8,shade);
+    }
+    rect(c,x+8,y+2,68,2,palette[2]);rect(c,x+4,y+6,2,70,palette[2]+'88');
+    rect(c,x+8,y+80,68,2,palette[0]);rect(c,x+78,y+8,2,68,palette[0]);
+    for(const [cx,cy] of [[2,2],[76,2],[2,76],[76,76]])rect(c,x+cx,y+cy,6,6,palette[0]);
+    for(let n=0;n<18;n++){
+      const px=10+(seed+n*23)%62,py=10+(seed*3+n*17)%62;
+      rect(c,x+px,y+py,n%4?2:6,2,n%2?palette[2]+'44':palette[0]+'33');
+    }
+    if(seed%3===0){
+      // Worn, inset lotus mosaics are floor ornament, with no sparkling collectible cue.
+      const dark=palette[0]+'55',light=palette[2]+'77';
+      // Curved petal outlines, deliberately lower contrast than gems or obstacles.
+      for(let py=0;py<8;py+=2){
+        const half=2+Math.min(py,8-py);
+        rect(c,x+42-half,y+30+py,half*2,2,dark);
+        rect(c,x+26+py,y+40+py,4,2,dark);rect(c,x+54-py,y+40+py,4,2,dark);
+      }
+      rect(c,x+40,y+32,2,10,light);rect(c,x+32,y+42,2,4,light);rect(c,x+50,y+42,2,4,light);
+      rect(c,x+34,y+50,16,2,dark);rect(c,x+38,y+52,8,2,light);
+    }else if(seed%4===0){
+      rect(c,x+52,y+6,14,2,palette[0]+'88');rect(c,x+50,y+8,4,12,palette[0]+'77');rect(c,x+46,y+20,6,2,palette[0]+'77');
+    }
+    if(seed%2===0){
+      rect(c,x+6,y+70,12,4,theme.leaf[1]);rect(c,x+4,y+66,6,6,theme.moss+'bb');rect(c,x+12,y+72,10,2,theme.leaf[2]);
+    }
   }
   function panel(c,x,y,w,h,top,front,side){
     rect(c,x+4,y,w-8,h,side);rect(c,x,y+4,w,h-8,side);
@@ -160,28 +208,133 @@
     rect(c,19,-11,4,blink?2:4,p[0]);if(!blink)rect(c,19,-11,2,2,'#fff8e4');
     rect(c,18,-4,5,2,p[6]);rect(c,28,-6,2,2,'#755247');
   }
-  function orb(c,rotation){
-    const palette=['#314557','#4c6556','#87915e','#c3bd70','#e5d28c','#f5e6ad','#fff1d0','#fffae8'];
-    for(let y=-9;y<=9;y++)for(let x=-9;x<=9;x++){
-      const r=x*x+y*y;if(r>81)continue;
-      if(r>68){rect(c,x*2,y*2,2,2,palette[0]);continue;}
-      const z=Math.sqrt(81-r)/9,light=Math.max(0,Math.min(1,.5+(-x-y)*.029+z*.35));
-      let color=palette[Math.min(7,1+Math.floor(light*6))];
-      const band=Math.sin(y*.22+Math.sin(rotation)*1.5+x*.08);
-      if(Math.abs(band)<.14 && r<62)color='#809d91';
-      if((x+y)%4===0 && light<.65)color=palette[Math.max(1,Math.floor(light*6))];
-      rect(c,x*2,y*2,2,2,color);
+  function orb(c,rotation,size=1){
+    const palette=['#24364b','#694e51','#9b624c','#c78650','#e9ad60','#f5ce83','#ffe5ad','#fff4d5'];
+    // Warm rim, dark contour, curved inlays and a fixed light make the player distinct.
+    const radius=Math.max(1,Math.round(10*size));
+    ring(c,0,0,(radius+2)*2,'#f4d69220',2);
+    for(let py=-radius;py<=radius;py++)for(let px=-radius;px<=radius;px++){
+      const x=px*10/radius,y=py*10/radius,r=x*x+y*y;if(r>100)continue;
+      let color=palette[0];
+      if(r<90){
+        const z=Math.sqrt(100-r)/10,light=Math.max(0,Math.min(1,.14+z*.56-(x+y)*.035));
+        color=palette[Math.min(7,1+Math.floor(light*6))];
+        if(r>76)color=(x+y<0)?'#e4c389':'#775c56';
+        else {
+          const seam=Math.sin(y*.29+rotation*.8+x*.06);
+          if(Math.abs(seam)<.18)color=light>.65?'#c3d7b5':'#527e79';
+          if((x*3+y)%7===0&&light<.65)color=palette[Math.max(1,Math.floor(light*6))];
+        }
+      }
+      rect(c,px*2,py*2,2,2,color);
     }
-    rect(c,-8,-12,6,4,'#fffce9');rect(c,-10,-10,2,4,'#fffce9');rect(c,-5,-12,2,2,'#ffffff');
+    rect(c,-10*size,-12*size,6,4,'#fff9e3');rect(c,-12*size,-8*size,2,4,'#fff0c7');
+    rect(c,-6*size,-14*size,4,2,'#fff9e3');rect(c,10*size,10*size,4,2,'#e9b979');rect(c,12*size,6*size,2,4,'#dca669');
+  }
+  function ring(c,x,y,r,color,size=2){
+    const count=Math.max(24,Math.ceil(r*2));for(let i=0;i<count;i++){const a=i/count*Math.PI*2;rect(c,x+Math.cos(a)*r,y+Math.sin(a)*r,size,size,color);}
+  }
+  function shadow(c,x,y,height){
+    const k=Math.min(1,height/65);
+    oval(c,x+3+k*6,y+4+k*5,23-k*5,20-k*5,'#102c4620');
+    oval(c,x+3+k*6,y+4+k*5,18-k*4,15-k*4,'#112b4940');
+    oval(c,x+2+k*5,y+3+k*4,12-k*3,10-k*3,'#152b494d');
   }
   function gem(c,time,phase,reduced){
-    const frame=reduced?0:Math.floor(time*4+phase)%4,colors=['#204858','#428b9d','#78c5cc','#acf3e8','#e5fff0'];
-    for(let row=-7;row<=7;row++){
-      const w=Math.max(0,Math.floor((7-Math.abs(row))*.7));
-      for(let x=-w;x<=w;x++)rect(c,x*2,row*2,2,2,colors[x<0?3:row<0?4:2]);
+    const frame=reduced?0:Math.floor(time*4+phase)%4;
+    const p=['#193c54','#39798c','#54a6b5','#8de1dc','#c8fff1','#f3fff4'];
+    for(let y=-8;y<=8;y++){
+      const width=Math.max(0,Math.round((8-Math.abs(y))*.72));
+      for(let x=-width;x<=width;x++){
+        let color=Math.abs(x)===width?p[0]:x<0?(y<0?p[5]:p[3]):y<0?p[4]:p[2];
+        if(x===0&&y<4&&y>-6)color=p[4];
+        rect(c,x*2,y*2,2,2,color);
+      }
     }
-    rect(c,0,-14,2,2,colors[1]);rect(c,0,14,2,2,colors[1]);
-    if(frame===0)spark(c,-12,-10,'#dcffef',2);if(frame===2)spark(c,10,8,'#dcffef',2);
+    rect(c,-4,-8,4,2,p[5]);rect(c,0,12,2,2,p[4]);
+    if(frame===0)spark(c,-14,-10,'#ddffef',2);if(frame===2)spark(c,12,8,'#ddffef',2);
+  }
+  function tree(c,index,seed=0){
+    const theme=THEMES[index],p=theme.leaf;
+    oval(c,2,3,27,28,p[0]);
+    for(const [x,y,rx,ry] of [[-11,-11,15,14],[12,-10,13,16],[-12,10,13,15],[10,11,15,14],[0,-1,18,20]]){
+      oval(c,x,y,rx,ry,p[1]);oval(c,x-2,y-3,rx-3,ry-4,p[2]);
+      rect(c,x-6,y-ry+4,8,2,p[3]);rect(c,x-rx+4,y-4,4,2,p[3]);
+    }
+    for(let i=0;i<21;i++){
+      const x=-21+(i*17+seed*3)%42,y=-23+(i*23+seed)%46;
+      rect(c,x,y,i%3?2:4,2,i%2?p[0]+'88':p[3]+'99');
+    }
+    flower(c,-11,-11,theme,seed);flower(c,12,8,theme,seed+1);
+    rect(c,-3,-6,2,13,p[1]);rect(c,-2,2,10,2,p[1]);
+  }
+  function rock(c,index,seed=0){
+    const theme=THEMES[index],p=['#2d4850','#557a70','#7b9e85','#b0c7a0','#d7ddba'];
+    for(let y=-27;y<=27;y+=2){
+      const w=Math.floor(25*Math.sqrt(Math.max(0,1-y*y/(28*28)))/2)*2;
+      if(!w)continue;
+      rect(c,-w,y,w*2,2,p[0]);
+      if(w>4){const shade=y< -12?p[3]:y<8?p[2]:p[1];rect(c,-w+2,y,w*2-4,2,shade);}
+      if(y>-20&&y<18&&w>10)rect(c,-w+4,y,4,2,p[4]+'55');
+    }
+    // Offset fractures and mineral facets give every stone a less boxy silhouette.
+    for(let i=0;i<6;i++){rect(c,-3+i*2,-20+i*6,2,6,p[0]);if(i%2===0)rect(c,-2+i*2,-20+i*6,6,2,p[1]);}
+    rect(c,-16,1,8,2,p[3]);rect(c,7,-13,6,2,p[4]);rect(c,12,-11,2,8,p[3]);
+    oval(c,-14,17,11,6,theme.leaf[1]);rect(c,-21,13,8,2,theme.moss);
+    if(seed%2===0)flower(c,-17,12,theme,seed);
+  }
+  function peak(c,index,time,reduced){
+    const p=index?['#3b3a59','#71648e','#a68fb2','#dcc9dc','#fff1e7']:['#354b63','#6e829e','#a6b8cd','#d4dce0','#fbf4e5'];
+    for(const [cx,cy,rx,ry] of [[-13,9,12,17],[13,8,12,20],[0,-5,14,26]]){
+      for(let y=-ry;y<=ry;y+=2){
+        const width=Math.max(0,Math.floor(rx*(1-Math.abs(y)/ry)/2)*2);
+        if(!width)continue;
+        rect(c,cx-width,cy+y,width*2,2,p[0]);
+        if(width>2){rect(c,cx-width+2,cy+y,width-2,2,y<0?p[3]:p[2]);rect(c,cx,cy+y,width-2,2,y<0?p[2]:p[1]);}
+      }
+      rect(c,cx-2,cy-ry+6,2,12,p[4]);
+    }
+    if(reduced||Math.floor(time*2)%5===0)spark(c,-5,-20,p[4],2);
+  }
+  function gap(c,x,y,w,h,index,time,reduced){
+    const theme=THEMES[index];rect(c,x,y,w,h,'#13283f');
+    for(let band=0;band<6;band++)rect(c,x+2,y+band*h/6+2,w-4,h/6,blend('#162d47',theme.water,band/10));
+    rect(c,x,y,w,2,'#0d2337');rect(c,x,y,2,h,'#0d2337');
+    for(const lip of [y-4,y+h]){
+      rect(c,x,lip,w,4,'#947b5d');
+      for(let n=0;n<w;n+=16)rect(c,x+n,lip,8,2,'#f0d19a');
+    }
+    rect(c,x+4,y+4,w-8,2,theme.ripple+'44');rect(c,x+5,y+h-6,w-10,2,theme.ripple+'22');
+    const t=reduced?0:Math.floor(time*2);
+    for(let i=0;i<Math.floor(w/40);i++){const px=x+12+(i*43+t*4)%Math.max(2,w-26),py=y+10+(i*17)%Math.max(2,h-20);rect(c,px,py,10,2,theme.ripple+'30');}
+  }
+  const GLYPHS={
+    '+':['00000','00100','00100','11111','00100','00100','00000'],
+    '0':['01110','11011','11011','11011','11011','11011','01110'],
+    '1':['00100','01100','00100','00100','00100','00100','01110'],
+    'F':['11111','10000','10000','11110','10000','10000','10000'],
+    'I':['11111','00100','00100','00100','00100','00100','11111'],
+    'N':['10001','11001','11001','10101','10011','10011','10001'],
+    'S':['01111','10000','10000','01110','00001','00001','11110'],
+    'H':['10001','10001','10001','11111','10001','10001','10001']
+  };
+  function text(c,value,x,y,size,color){
+    for(let i=0;i<value.length;i++){const glyph=GLYPHS[value[i]];if(!glyph)continue;glyph.forEach((row,r)=>[...row].forEach((on,col)=>{if(on==='1')rect(c,x+(i*6+col)*size,y+r*size,size,size,color);}));}
+  }
+  function finish(c,x,y,w,index){
+    const theme=THEMES[index];rect(c,x+126,y-28,168,22,'#1a3448');rect(c,x+130,y-26,160,2,'#cccca3');
+    text(c,'FINISH',x+(w-70)/2,y-22,2,'#eee2b4');
+    for(const sx of [x+12,x+w-12]){flower(c,sx,y-8,theme,0);flower(c,sx,y+16,theme,1);}
+  }
+  function medal(c){
+    for(const side of [-1,1])for(let i=0;i<5;i++){
+      const x=side*(14+Math.round(4*Math.sin(i/4*Math.PI))),y=-12+i*6;
+      oval(c,x,y,4,3,'#87a582');rect(c,x-2,y-2,4,2,'#c4d6a0');
+    }
+    rect(c,-8,14,6,8,'#779b96');rect(c,2,14,6,8,'#a588a8');
+    oval(c,0,0,14,16,'#775a49');oval(c,0,-2,12,14,'#e2b467');oval(c,-1,-4,10,11,'#f2d497');
+    const star=['000010000','000010000','000111000','111111111','011111110','001111100','001101100','011000110','010000010'];
+    star.forEach((row,y)=>[...row].forEach((bit,x)=>{if(bit==='1')rect(c,-8+x*2,-12+y*2,2,2,'#fff0c8');}));
   }
   function vignette(c,index,time,reduced){
     const theme=THEMES[index];c.save();
@@ -192,6 +345,6 @@
     for(let i=0;i<6;i++)flower(c,12+i*54,92-i%2*6,theme,i);
     spark(c,93,24,theme.glow,2);spark(c,205,72,theme.glow,2);c.restore();
   }
-  const api={THEMES,rect,oval,spark,flower,backdrop,tile,panel,duck,orb,gem,vignette};
+  const api={THEMES,rect,oval,spark,flower,backdrop,tile,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
   if(typeof module!=='undefined')module.exports=api;root.SkyPixelArt=api;
 })(typeof window!=='undefined'?window:globalThis);
