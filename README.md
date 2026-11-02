@@ -1,5 +1,9 @@
 # Rolling Sky — Moonlit Garden Atlas
 
+**[Play online — Moonlit Garden Atlas](https://diegosecor.github.io/HW7---Rolling-Sky-V2/)**
+
+Hosted on GitHub Pages. Select a garden on the map and press PLAY LEVEL. No installation required.
+
 **Original game design, specification and foundation: [sharon5u](https://github.com/sharon5u/gamegame).**
 
 Phase 2 implementation and visual polish: Diego, with AI assistance documented in `prompt_log.md`.
