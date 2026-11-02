@@ -97,6 +97,14 @@ The original stylesheet remains unchanged; `polish.css` extends its layout and p
 
 ## Verification
 
+### Complete visual refinement
+
+The second art pass covers the complete board, rather than only the animal sprites. The player is a shaded gold sphere with a rotating teal inlay, layered contact shadows and a matching menu portrait. Its jump enlargement is repainted on the pixel grid to avoid soft edges from fractional scaling.
+
+The two routes use different stone palettes with worn lotus inlays, mineral grain, moss, grass strips and scalloped edging. The water background includes irregular banks, reeds, reflections, pond animals and fireflies. Bushes, mossy rocks and mountain-crystal clusters replace the old nested block shapes. Cyan diamonds, recessed gaps with striped lips, bitmap score effects, a labeled finish line and a laurel medal complete the same visual direction. The original engine, course layouts and specification were not edited during this pass.
+
+Static native-canvas renders were inspected for both routes, a jump, nightfall, the finish and the victory medal. This verifies the drawing code's appearance; interactive browser layout, audio and touch remain manual checks.
+
 With Node.js 18 or newer, run `npm test`. No package installation is needed. The equivalent command is:
 
 ```text
