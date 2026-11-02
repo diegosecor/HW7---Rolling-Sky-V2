@@ -2,6 +2,39 @@
 const E = SkyEngine, $ = id => document.getElementById(id), canvas = $('game'), ctx = canvas.getContext('2d');
 let selected = 0, state = E.create(), mode = 'ready', last = 0, accumulator = 0, muted = true, audio, best = 0;
 const keys = new Set();
+const journal=E.LEVELS.map(()=>({cleared:false,best:0,gems:0}));
+try {
+  const saved=JSON.parse(localStorage.getItem('sky-garden-journal')||'[]');
+  if(Array.isArray(saved))for(let i=0;i<journal.length;i++){
+    const entry=saved[i];if(!entry||typeof entry!=='object')continue;
+    journal[i]={cleared:entry.cleared===true,best:Number.isSafeInteger(entry.best)&&entry.best>=0?entry.best:0,gems:Number.isSafeInteger(entry.gems)&&entry.gems>=0?Math.min(entry.gems,E.layout(i).filter(o=>o.type==='diamond').length):0};
+  }
+} catch(_) { /* A damaged or unavailable journal never prevents a run. */ }
+function updateJournal(){
+  const level=E.LEVELS[selected],theme=SkyPixelArt.THEMES[selected],total=E.layout(selected).filter(o=>o.type==='diamond').length;
+  $('campaign-count').textContent=journal.filter(j=>j.cleared).length+' / '+E.LEVELS.length+' CLEARED';
+  $('level-region').textContent=theme.name.toUpperCase();$('level-title').textContent=level.name;
+  $('level-description').textContent=level.description;$('level-difficulty').textContent=level.difficulty;
+  const seconds=Math.round(level.length/level.acceleration*Math.log(1+level.acceleration/level.speed));
+  $('level-duration').textContent='~'+seconds+'s';$('level-gems').textContent=journal[selected].gems+' / '+total;
+  $('level-best').textContent=journal[selected].best?String(journal[selected].best):'—';$('level-tip').textContent=level.tip;
+  document.querySelectorAll('[data-level]').forEach(b=>{
+    const i=Number(b.dataset.level);b.classList.toggle('completed',journal[i].cleared);
+    b.classList.toggle('active',i===selected);b.setAttribute('aria-pressed',i===selected);
+    b.setAttribute('aria-label',E.LEVELS[i].name+', '+E.LEVELS[i].difficulty+(journal[i].cleared?', cleared':''));
+  });
+}
+function selectLevel(index){
+  if(!Number.isInteger(index)||index<0||index>=E.LEVELS.length)return;
+  resetEffects();selected=index;state=E.create(selected);mode='ready';keys.clear();
+  if(document.body?.dataset)document.body.dataset.world=String(selected);
+  const theme=SkyPixelArt.THEMES[selected];
+  document.body?.style?.setProperty('--world-top',theme.top);document.body?.style?.setProperty('--world-bottom',theme.bottom);
+  document.body?.classList.remove('playing','victory');
+  $('route-name').textContent=E.LEVELS[selected].name.toUpperCase();
+  overlay('GARDEN '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0'),E.LEVELS[selected].name,E.LEVELS[selected].description,'Let’s roll ↗','← → TO STEER · ↑ TO JUMP');
+  updateHUD();updateJournal();
+}
 const PLAYER_Y=575;
 // One real pixel per two world units; CSS enlarges the artwork without smoothing.
 canvas.width=300;canvas.height=360;ctx.setTransform(.5,0,0,.5,0,0);ctx.imageSmoothingEnabled=false;
@@ -63,9 +96,10 @@ function playMusic(){
   beep(melody[beat%melody.length],.19,'sine',.009);
 }
 function overlay(label, title, copy, button, hint) {
+  $('next-route').hidden=true;$('back-map').hidden=mode==='ready';$('run-summary').hidden=true;
   $('overlay').classList.remove('hidden'); $('screen-label').textContent = label; $('screen-title').textContent = title; $('screen-copy').textContent = copy; $('start').textContent = button; $('screen-hint').textContent = hint;
 }
-function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ'; beep(440, 0.15); updateHUD(); }
+function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
 function pause() {
   if (mode === 'playing') { mode = 'paused'; keys.clear(); overlay('TAKE A BREATHER', 'Sky on standby.', 'Your run is right where you left it.', 'Continue ↗', 'P TO RESUME'); $('pause').textContent = '▶'; }
   else if (mode === 'paused') { mode = 'playing'; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ'; }
@@ -75,13 +109,29 @@ function finish() {
   mode = state.status;document.body?.classList.remove('playing');document.body?.classList.toggle('victory',mode==='won'); keys.clear(); const score = E.score(state);
   if (score > best) { best = score; try { localStorage.setItem('skyline-best', String(best)); } catch (_) {} }
   $('best').textContent = String(best).padStart(5, '0');
+  const record=journal[selected];record.best=Math.max(record.best,score);record.gems=Math.max(record.gems,state.diamonds);
+  if(mode==='won')record.cleared=true;
+  try {localStorage.setItem('sky-garden-journal',JSON.stringify(journal));} catch(_) {}
+  updateJournal();
+  const allClear=journal.every(j=>j.cleared),total=state.objects.filter(o=>o.type==='diamond').length;
   overlay(mode === 'won' ? 'ROUTE COMPLETE' : 'EVERY RUN IS A NEW START', mode === 'won' ? 'Above and beyond.' : 'One more roll?', `${mode === 'won' ? 'Finish line reached!' : state.reason} Score: ${score} · Diamonds: ${state.diamonds}`, 'Roll again ↗', 'SPACE TO RESTART · OR CHOOSE ANOTHER ROUTE');
+  $('run-summary').hidden=false;$('run-summary').textContent='GARDEN '+String(selected+1).padStart(2,'0')+' / '+E.LEVELS.length+' · '+state.diamonds+' / '+total+' GEMS · BEST '+record.best;
+  if(mode==='won'){
+    $('screen-label').textContent=allClear?'ALL EIGHT GARDENS CLEARED':'GARDEN STAMP EARNED';
+    $('screen-title').textContent=allClear?'The gardens are yours.':'A little more wonder.';
+    $('screen-copy').textContent=allClear?'Eight gardens. Every finish. A beautiful journey. Score: '+score:'You cleared '+E.LEVELS[selected].name+'. Score: '+score;
+    $('next-route').hidden=selected===E.LEVELS.length-1;
+  }
   if(mode==='won'){beep(880,0.35);burst(300,350,24,'#f4d39c');burst(300,350,18,'#a0d5c1');burst(300,350,18,'#e6b7c8');}
 }
-function updateHUD() { const fraction=state.distance/E.LEVELS[selected].length; $('challenge').textContent = fraction>=0.25&&fraction<0.50 ? '☾ NIGHTFALL · FOLLOW YOUR LIGHT' : fraction>=0.55&&fraction<0.65 ? '↔ CROSSWIND · FOLLOW THE ROAD' : '● LIVE FROM THE SKY'; const p = Math.floor(state.distance / E.LEVELS[selected].length * 100); $('score').textContent = String(E.score(state)).padStart(5, '0'); $('percent').textContent = p + '%'; $('diamonds').textContent=state.diamonds+'◇'; $('progress').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', p); $('speed').textContent = (1 + E.LEVELS[selected].acceleration / E.LEVELS[selected].speed * p / 100).toFixed(1) + '×'; }
+function updateHUD() { const fraction=state.distance/E.LEVELS[selected].length; $('challenge').textContent = fraction>=0.25&&fraction<0.50 ? '☾ NIGHTFALL · FOLLOW YOUR LIGHT' : fraction>=0.55&&fraction<0.65 ? '↔ CROSSWIND · FOLLOW THE ROAD' : String(selected+1).padStart(2,'0')+' / '+E.LEVELS.length+' · '+SkyPixelArt.THEMES[selected].name.toUpperCase(); const p = Math.floor(state.distance / E.LEVELS[selected].length * 100); $('score').textContent = String(E.score(state)).padStart(5, '0'); $('percent').textContent = p + '%'; $('diamonds').textContent=state.diamonds+'◇'; $('progress').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', p); $('speed').textContent = (1 + E.LEVELS[selected].acceleration / E.LEVELS[selected].speed * p / 100).toFixed(1) + '×'; }
 $('start').onclick = () => mode === 'paused' ? pause() : start(); $('pause').onclick = pause;
+$('next-route').onclick=()=>{if(mode==='won'&&selected<E.LEVELS.length-1){selectLevel(selected+1);start();}};
+$('back-map').onclick=()=>{selectLevel(selected);$('garden-atlas').scrollIntoView?.({block:'start',behavior:reducedMotion?'auto':'smooth'});};
+$('play-selected').onclick=start;
 $('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? 'Audio off' : 'Audio on'; $('sound').setAttribute('aria-pressed', !muted); beep(650, 0.1); };
-document.querySelectorAll('[data-level]').forEach(button => button.onclick = () => { resetEffects(); selected = Number(button.dataset.level); state = E.create(selected);if(document.body?.dataset)document.body.dataset.world=String(selected); mode = 'ready';document.body?.classList.remove('playing','victory'); keys.clear(); document.querySelectorAll('[data-level]').forEach(b => b.classList.toggle('active', b === button)); $('route-name').textContent = E.LEVELS[selected].name.toUpperCase(); overlay('READY WHEN YOU ARE', 'The sky is yours.', 'Steer around obstacles. Jump the gaps. Follow the diamonds to the finish.', 'Let’s roll ↗', '← → TO STEER · ↑ TO JUMP'); updateHUD(); });
+document.querySelectorAll('[data-level]').forEach(button=>button.onclick=()=>selectLevel(Number(button.dataset.level)));
+updateJournal();
 function press(key, repeat = false) { if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
 window.addEventListener('keydown', e => { if (['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key)) e.preventDefault(); press(e.key, e.repeat); });
 window.addEventListener('keyup', e => keys.delete(e.key));
@@ -111,6 +161,18 @@ function scenery(o) {
   } else SkyPixelArt.rock(ctx,selected,Math.floor(o.phase||0));
   ctx.restore();
 }
+// Reuse static artwork while it scrolls. A small bounded cache also covers restarts.
+const pavingCache=new Map();
+function pavingRow(row){
+  if(typeof document.createElement!=='function')return null;
+  const key=selected+':'+row;if(pavingCache.has(key))return pavingCache.get(key);
+  const surface=document.createElement('canvas');surface.width=210;surface.height=42;
+  const brush=surface.getContext('2d');brush.setTransform(.5,0,0,.5,0,0);brush.imageSmoothingEnabled=false;
+  for(let lane=0;lane<5;lane++)SkyPixelArt.tile(brush,lane*84,0,row,lane,selected);
+  SkyPixelArt.frieze(brush,0,0,row,selected);pavingCache.set(key,surface);
+  if(pavingCache.size>48)pavingCache.delete(pavingCache.keys().next().value);
+  return surface;
+}
 function draw() {
   const distance=state.distance,theme=SkyPixelArt.THEMES[selected];
   SkyPixelArt.backdrop(ctx,selected,distance,artClock,reducedMotion);
@@ -125,12 +187,11 @@ function draw() {
   for(let row=last;row>=first;row--) {
     const near=row*84,far=near+84;
     ground(84,90,near,far,theme.leaf[0]);ground(510,516,near,far,theme.leaf[0]);
-    for(let lane=0;lane<5;lane++) {
-      const x=90+lane*84;
-      const path=lane>0&&lane<4;
-      const colors=path?theme.stone:theme.grass;
-      ground(x,x+84,near,far,colors[((row+lane)%2+2)%2]);
-      const p=project(x,far);SkyPixelArt.tile(ctx,p.x,p.y,row,lane,selected);
+    const rowStart=project(90,far),paving=pavingRow(row);
+    if(paving)ctx.drawImage(paving,Math.round(rowStart.x/2)*2,Math.round(rowStart.y/2)*2,420,84);
+    else {
+      for(let lane=0;lane<5;lane++)SkyPixelArt.tile(ctx,rowStart.x+lane*84,rowStart.y,row,lane,selected);
+      SkyPixelArt.frieze(ctx,rowStart.x,rowStart.y,row,selected);
     }
   }
   // Recessed water, striped lips and strong contrast distinguish lethal gaps.

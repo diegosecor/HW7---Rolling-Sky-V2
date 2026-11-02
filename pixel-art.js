@@ -3,7 +3,13 @@
   'use strict';
   const THEMES=[
     {name:'Luminous wetlands',top:'#152c46',bottom:'#336a78',water:'#244c65',ripple:'#82c7bd',glow:'#c4f3b1',petal:'#f5bbba',stone:['#28495e','#4b7887','#8bb6b2'],grass:['#234951','#39735f','#75a17c'],leaf:['#254b51','#42755c','#74a373','#bad297'],moss:'#a3c395'},
-    {name:'Moonflower garden',top:'#24223f',bottom:'#725d80',water:'#3e3d64',ripple:'#ada1d0',glow:'#f7dfa5',petal:'#e7b7d6',stone:['#3f4263','#746e96','#bdadc2'],grass:['#2b4659','#456b70','#89a597'],leaf:['#294858','#4e6c75','#879c98','#c4cdb1'],moss:'#b8bfd0'}
+    {name:'Moonflower garden',top:'#24223f',bottom:'#725d80',water:'#3e3d64',ripple:'#ada1d0',glow:'#f7dfa5',petal:'#e7b7d6',stone:['#3f4263','#746e96','#bdadc2'],grass:['#2b4659','#456b70','#89a597'],leaf:['#294858','#4e6c75','#879c98','#c4cdb1'],moss:'#b8bfd0'},
+    {name:"Amber orchard",top:"#342c3c",bottom:"#79645c",water:"#534451",ripple:"#e8c59a",glow:"#ffe3a2",petal:"#e5a383",stone:["#694f4c","#ad826e","#dfbc92"],grass:["#3c4944","#687c57","#b8ae76"],leaf:["#59474a","#a16e4e","#d8a56b","#eed29b"],moss:"#afb184"},
+    {name:"Jade sanctuary",top:"#123b3f",bottom:"#3b7672",water:"#225654",ripple:"#a6d7b7",glow:"#e1efb2",petal:"#f3c3b7",stone:["#2c5753","#62958a","#b5ceac"],grass:["#254b3d","#43784f","#9cbb79"],leaf:["#234b46","#4c8262","#8ab984","#c8d7a4"],moss:"#b3cc8e"},
+    {name:"Coral tide",top:"#243e57",bottom:"#617f8d",water:"#3b657b",ripple:"#badfda",glow:"#ffe7be",petal:"#f3b7b3",stone:["#725c73","#ac8c97","#e4c9bf"],grass:["#315c60","#5a8c82","#a6bca0"],leaf:["#514762","#987889","#cc9b9e","#edc5b2"],moss:"#b8c9b8"},
+    {name:"Frostpetal pass",top:"#233851",bottom:"#6e94a6",water:"#3d617c",ripple:"#d3e8ed",glow:"#e6f8ed",petal:"#e8d6e7",stone:["#52677d","#91afbc","#dae6df"],grass:["#395965","#6f9599","#bed0c3"],leaf:["#3c5d6c","#779a9e","#afcac2","#e1e9d2"],moss:"#d6e4cb"},
+    {name:"Ember lanterns",top:"#352b43",bottom:"#75535e",water:"#493b55",ripple:"#cba1af",glow:"#ffdb9b",petal:"#e6a59d",stone:["#514663","#8e7187","#ccacb1"],grass:["#354b4f","#5e7668","#aba985"],leaf:["#4f4559","#86656d","#b98d87","#e2bca4"],moss:"#b6b58e"},
+    {name:"Starlit crown",top:"#1b2747",bottom:"#4b527e",water:"#303c68",ripple:"#b5bfdc",glow:"#f6dfa1",petal:"#d7bbd9",stone:["#3a476d","#7385a1","#c3d1d1"],grass:["#2b465c","#4d7180","#a5b8b0"],leaf:["#34485e","#677d96","#a5b6c0","#e0dbc1"],moss:"#c1c6ac"}
   ];
   const colors=new Map();
   function blend(a,b,t){
@@ -51,6 +57,27 @@
     rect(c,-7,3,5,3,'#b5c9bf');rect(c,2,-7,6,2,'#ddd4bd');rect(c,9,-3,2,2,'#283b4c');
     rect(c,-3,-5,6,2,'#f2e3c7');rect(c,14,-1,2,2,'#f1d0b0');c.restore();
   }
+  function atmosphere(c,index,time,scroll,theme){
+    for(let i=0;i<12;i++){
+      const side=i%2,x=(side?540:14)+(i*17)%48+Math.sin(time*.5+i)*5,y=(i*71+scroll*.7+time*(index===5?8:3))%800-40;
+      if(index===2){
+        rect(c,x,y,6,4,theme.leaf[2]);rect(c,x+2,y-2,4,2,theme.petal);rect(c,x+2,y+2,2,6,theme.leaf[0]);
+      }else if(index===3 && i<6){
+        rect(c,x,y-20,4,50,theme.leaf[1]);for(let n=0;n<4;n++){rect(c,x-2,y-18+n*12,8,2,theme.leaf[3]);rect(c,x+4,y-12+n*12,8,2,theme.leaf[2]);}
+      }else if(index===4){
+        ring(c,x,y,3+i%3,theme.ripple+'66',2);
+        if(i<4){rect(c,x,y+8,4,24,theme.leaf[1]);rect(c,x-6,y+16,16,4,theme.petal+'aa');rect(c,x-6,y+10,2,10,theme.petal+'aa');rect(c,x+8,y+12,2,8,theme.petal+'aa');}
+      }else if(index===5){
+        spark(c,x,y,'#edf0e6aa',2);if(i%3===0){rect(c,x-4,y-4,2,2,'#edf0e688');rect(c,x+4,y+4,2,2,'#edf0e688');}
+      }else if(index===6 && i%3===0){
+        rect(c,x-8,y-12,16,20,'#875968');rect(c,x-6,y-10,12,16,'#d69579');rect(c,x-2,y-10,4,16,'#f8d5a1');
+        rect(c,x-6,y-14,12,2,'#d5af89');rect(c,x-6,y+8,12,2,'#d5af89');rect(c,x,y+10,2,6,'#b28c8d');
+      }else if(index===7){
+        spark(c,x,y,theme.glow+'aa',2);
+        if(i%3===0)for(let n=1;n<7;n++)rect(c,x+n*4,y-n*2,2,2,theme.ripple+'44');
+      }
+    }
+  }
   function backdrop(c,index,distance,time,reduced){
     const theme=THEMES[index],t=reduced?0:time,scroll=reduced?0:distance*.09;
     c.save();
@@ -96,8 +123,7 @@
       lily(c,x,y,theme,i%3===0);
       if(i===2||i===5)frog(c,x,y-3,theme,Math.floor(t*2+i)%16===0);
     }
-    fish(c,43+Math.sin(t*.4)*5,(240+scroll*.55)%820-50,t,false);
-    fish(c,555+Math.sin(t*.35+2)*5,(600+scroll*.45)%820-50,t+2,true);
+    if(index!==5&&index!==7){fish(c,43+Math.sin(t*.4)*5,(240+scroll*.55)%820-50,t,false);fish(c,555+Math.sin(t*.35+2)*5,(600+scroll*.45)%820-50,t+2,true);}
     for(let i=0;i<20;i++){
       const side=i%2,x=(side?550:24)+Math.sin(t*.45+i*2)*20,y=(i*67+scroll*.3)%720;
       c.globalAlpha=.28+(reduced?.2:.45*(.5+.5*Math.sin(t*1.4+i)));
@@ -111,63 +137,141 @@
       rect(c,x-width-2,y-3,width,6,theme.petal);rect(c,x+2,y-3,width,6,theme.petal);
       rect(c,x-width,y-1,2,2,'#fff3d5');rect(c,x+4,y-1,2,2,'#fff3d5');rect(c,x,y-4,2,8,'#213747');
     }
+    atmosphere(c,index,t,scroll,theme);
     c.restore();
   }
+  function hash(row,lane,index){
+    let value=Math.imul(row,374761393)^Math.imul(lane+11,668265263)^Math.imul(index+1,1274126177);
+    value=Math.imul(value^(value>>>13),1274126177);return (value^(value>>>16))>>>0;
+  }
+  function stone(c,x,y,w,h,p,seed){
+    rect(c,x,y,w,h,p[0]);
+    const wear=(seed%5)/16;
+    for(let band=0;band<4;band++){
+      const shade=blend(p[2],p[1],Math.round((.20+band*.14+wear)*16)/16);
+      rect(c,x+2,y+2+band*(h-4)/4,w-4,(h-4)/4,shade);
+    }
+    rect(c,x+4,y,Math.max(2,w-8),2,p[2]+'bb');rect(c,x,y+4,2,Math.max(2,h-8),p[2]+'66');
+    rect(c,x+4,y+h-2,Math.max(2,w-8),2,p[0]+'bb');
+    for(let n=0;n<Math.max(3,w*h/180);n++){
+      const px=4+(seed+n*17)%Math.max(2,w-8),py=4+(seed*3+n*13)%Math.max(2,h-8);
+      rect(c,x+px,y+py,n%4?2:4,2,n%2?p[2]+'44':p[0]+'44');
+    }
+    if(seed%4===0 && w>28 && h>24){
+      rect(c,x+w-12,y+4,2,8,p[0]+'77');rect(c,x+w-16,y+12,6,2,p[0]+'77');
+    }
+  }
+  function inlay(c,x,y,index,p,large=false){
+    const dark=p[0]+'66',light=p[2]+'99',r=large?26:14;
+    // Each garden has an engraved motif. These subdued marks never sparkle like gems.
+    if(index===0||index===4){
+      for(let i=0;i<5;i++){
+        const a=(i-2)*.55,px=x+Math.sin(a)*r*.7,py=y-Math.cos(a)*r*.6;
+        oval(c,px,py,large?7:4,large?11:6,dark);
+        rect(c,px-2,py-(large?6:2),2,large?8:4,light);
+      }
+      rect(c,x-r*.7,y+r*.45,r*1.4,2,light);rect(c,x-r*.4,y+r*.6,r*.8,2,dark);
+    }else if(index===1){
+      for(let py=-r;py<=r;py+=2){
+        const w=Math.sqrt(Math.max(0,r*r-py*py));
+        rect(c,x-w,y+py,w*.65,2,dark);rect(c,x-w,y+py,2,2,light);
+      }
+      spark(c,x+r*.45,y-r*.45,light,2);
+    }else if(index===2){
+      for(let py=-r;py<=r;py+=2){
+        const w=Math.max(2,(r-Math.abs(py))*.6);rect(c,x-w+py*.3,y+py,w*2,2,dark);
+        rect(c,x+py*.3,y+py,2,2,light);
+      }
+    }else if(index===3){
+      for(const dx of [-r*.5,0,r*.5]){
+        rect(c,x+dx,y-r,4,r*2,dark);
+        for(let n=-r+4;n<r;n+=8)rect(c,x+dx-2,y+n,8,2,light);
+      }
+    }else if(index===5||index===7){
+      const rays=index===5?6:8;
+      for(let i=0;i<rays;i++){
+        const a=i/rays*Math.PI*2;
+        for(let n=4;n<=r;n+=2){
+          const px=x+Math.cos(a)*n,py=y+Math.sin(a)*n;rect(c,px,py,2,2,n%4?dark:light);
+          if(n===r-6){rect(c,px+Math.cos(a+.8)*5,py+Math.sin(a+.8)*5,2,2,light);rect(c,px+Math.cos(a-.8)*5,py+Math.sin(a-.8)*5,2,2,light);}
+        }
+      }
+    }else{
+      ring(c,x,y,r*.7,dark,2);rect(c,x-r*.5,y-4,r,8,dark);
+      rect(c,x-2,y-r,4,r*2,light);rect(c,x-8,y+r-2,16,2,dark);
+    }
+  }
   function tile(c,x,y,row,lane,index){
-    const theme=THEMES[index],garden=lane===0||lane===4,palette=garden?theme.grass:theme.stone;
-    const seed=((row*37+lane*13)%97+97)%97;
+    const theme=THEMES[index],garden=lane===0||lane===4,p=garden?theme.grass:theme.stone;
+    const seed=hash(row,lane,index),section=((Math.floor(row/5)+index)%5+5)%5;
     if(garden){
-      rect(c,x,y,84,84,palette[0]);
-      for(let strip=0;strip<7;strip++)rect(c,x+2,y+2+strip*12,80,12,blend(palette[1],palette[0],strip/12));
-      // Uneven soft grass islands, fine blades and little flower clusters.
-      for(let n=0;n<5;n++){
-        const px=12+(seed+n*29)%62,py=10+(seed*3+n*19)%66;
-        oval(c,x+px,y+py,9+n%3*3,5+n%2*2,palette[2]+'33');
-      }
-      for(let n=0;n<16;n++){
-        const px=6+(seed+n*19)%72,py=8+(seed*3+n*13)%68;
-        rect(c,x+px,y+py,2,4+n%2*2,n%3?palette[0]:palette[2]);
-        rect(c,x+px-2,y+py+2,2,2,palette[2]+'99');
-      }
-      if((row+lane)%3===0){flower(c,x+20+seed%40,y+24+seed%28,theme,seed);flower(c,x+14+seed%40,y+32+seed%28,theme,seed+1);}
-      // A scalloped stone edging separates garden strips from the central paving.
-      const edge=lane===0?x+76:x+2;
+      rect(c,x,y,84,84,p[0]);
+      for(let strip=0;strip<6;strip++)rect(c,x+2,y+strip*14,80,14,blend(p[1],p[0],strip/12));
       for(let n=0;n<7;n++){
-        rect(c,edge,y+n*12+2,6,8,palette[0]);
-        rect(c,edge,y+n*12,4,8,theme.stone[1]);rect(c,edge,y+n*12,4,2,theme.stone[2]);
+        const px=10+(seed+n*29)%64,py=8+(seed*3+n*19)%68;
+        oval(c,x+px,y+py,8+n%3*3,4+n%2*2,p[2]+'33');
       }
+      for(let n=0;n<19;n++){
+        const px=6+(seed+n*19)%72,py=8+(seed*3+n*13)%68;
+        rect(c,x+px,y+py,2,4+n%2*2,n%3?p[0]:p[2]);rect(c,x+px-2,y+py+2,2,2,p[2]+'88');
+      }
+      if(seed%3===0){flower(c,x+18+seed%44,y+20+(seed>>>4)%42,theme,seed);flower(c,x+12+seed%44,y+28+(seed>>>4)%42,theme,seed+1);}
+      if(seed%5===0){
+        oval(c,x+30,y+44,9,5,theme.stone[0]);oval(c,x+28,y+42,7,4,theme.stone[1]);rect(c,x+24,y+40,6,2,theme.stone[2]);
+        flower(c,x+45,y+40,theme,seed);
+      }
+      const edge=lane===0?x+76:x+2;
+      for(let n=0;n<7;n++){rect(c,edge,y+n*12+2,6,8,p[0]);rect(c,edge,y+n*12,4,8,theme.stone[1]);rect(c,edge,y+n*12,4,2,theme.stone[2]);}
+      if(index===5)for(let n=0;n<5;n++)rect(c,x+8+(seed+n*19)%62,y+6+(seed+n*23)%70,8,2,'#edf0df88');
       return;
     }
-    // Cut limestone slabs: shaded joints, broken corners and a soft mineral grain.
-    rect(c,x,y,84,84,palette[0]);
-    const shift=(seed%3-1)*.04;
-    for(let strip=0;strip<10;strip++){
-      const shade=blend(palette[2],palette[1],Math.max(0,Math.min(1,.25+strip*.052+shift)));
-      rect(c,x+4,y+4+strip*8,76,8,shade);
-    }
-    rect(c,x+8,y+2,68,2,palette[2]);rect(c,x+4,y+6,2,70,palette[2]+'88');
-    rect(c,x+8,y+80,68,2,palette[0]);rect(c,x+78,y+8,2,68,palette[0]);
-    for(const [cx,cy] of [[2,2],[76,2],[2,76],[76,76]])rect(c,x+cx,y+cy,6,6,palette[0]);
-    for(let n=0;n<18;n++){
-      const px=10+(seed+n*23)%62,py=10+(seed*3+n*17)%62;
-      rect(c,x+px,y+py,n%4?2:6,2,n%2?palette[2]+'44':palette[0]+'33');
+    rect(c,x,y,84,84,p[0]);
+    // Five paving bonds form sections of a garden, instead of a repeated large square.
+    if(section===0){
+      const split=seed%2?48:32;
+      stone(c,x+2,y+2,split-2,38,p,seed);stone(c,x+split+2,y+2,80-split,38,p,seed+7);
+      stone(c,x+2,y+44,80,38,p,seed+19);
+    }else if(section===1){
+      stone(c,x+2,y+2,80,80,p,seed);
+      if(seed%3!==0)inlay(c,x+42,y+42,index,p,false);
+      for(let n=0;n<4;n++){rect(c,x+10+n*18,y+8,8,2,p[0]+'44');rect(c,x+10+n*18,y+74,8,2,p[2]+'66');}
+    }else if(section===2){
+      for(let r=0;r<3;r++)for(let col=0;col<3;col++){
+        const dx=r%2?4:0,px=x+4+col*26,py=y+4+r*26;
+        stone(c,px,py,24,24,p,seed+r*11+col*7);
+        rect(c,px+4+dx,py+4,4,2,p[2]+'77');
+      }
+    }else if(section===3){
+      for(let col=0;col<3;col++){
+        const px=x+2+col*28,cut=(row+col)%2?24:52;
+        stone(c,px,y+2,24,cut-2,p,seed+col*13);stone(c,px,y+cut+2,24,80-cut,p,seed+col*17+3);
+      }
+    }else{
+      // Near-continuous worn marble with inset seams gives the eyes a quieter section.
+      stone(c,x+2,y,80,84,p,seed);
+      rect(c,x+8,y+6,2,70,p[2]+'55');rect(c,x+74,y+6,2,70,p[0]+'66');
+      if(seed%4===0)inlay(c,x+42,y+42,index,p,false);
     }
     if(seed%3===0){
-      // Worn, inset lotus mosaics are floor ornament, with no sparkling collectible cue.
-      const dark=palette[0]+'55',light=palette[2]+'77';
-      // Curved petal outlines, deliberately lower contrast than gems or obstacles.
-      for(let py=0;py<8;py+=2){
-        const half=2+Math.min(py,8-py);
-        rect(c,x+42-half,y+30+py,half*2,2,dark);
-        rect(c,x+26+py,y+40+py,4,2,dark);rect(c,x+54-py,y+40+py,4,2,dark);
-      }
-      rect(c,x+40,y+32,2,10,light);rect(c,x+32,y+42,2,4,light);rect(c,x+50,y+42,2,4,light);
-      rect(c,x+34,y+50,16,2,dark);rect(c,x+38,y+52,8,2,light);
-    }else if(seed%4===0){
-      rect(c,x+52,y+6,14,2,palette[0]+'88');rect(c,x+50,y+8,4,12,palette[0]+'77');rect(c,x+46,y+20,6,2,palette[0]+'77');
+      const px=x+(seed%2?6:66),py=y+8+(seed>>>5)%52;
+      oval(c,px+2,py+4,8,5,theme.leaf[1]+'aa');rect(c,px-2,py,6,2,theme.moss+'bb');rect(c,px+4,py+6,6,2,theme.leaf[2]+'bb');
     }
-    if(seed%2===0){
-      rect(c,x+6,y+70,12,4,theme.leaf[1]);rect(c,x+4,y+66,6,6,theme.moss+'bb');rect(c,x+12,y+72,10,2,theme.leaf[2]);
+  }
+  function frieze(c,x,y,row,index){
+    const t=THEMES[index],phase=((row+index*3)%13+13)%13;
+    if(phase===0){
+      // A larger compass/flower medallion spans the three central lanes.
+      oval(c,x+210,y+42,62,32,t.stone[0]+'33');
+      ring(c,x+210,y+42,32,t.stone[2]+'55',2);
+      ring(c,x+210,y+42,38,t.stone[0]+'44',2);
+      inlay(c,x+210,y+42,index,t.stone,true);
+      for(const side of [-1,1])for(let n=0;n<5;n++)rect(c,x+210+side*(44+n*10),y+42+(n%2?2:-2),6,2,t.stone[2]+'66');
+    }
+    if(phase===6){
+      for(let n=0;n<31;n++){
+        rect(c,x+86+n*8,y+6,4,2,t.stone[0]+'88');
+        rect(c,x+86+n*8,y+10,4,2,t.stone[2]+'88');
+      }
     }
   }
   function panel(c,x,y,w,h,top,front,side){
@@ -284,7 +388,7 @@
     if(seed%2===0)flower(c,-17,12,theme,seed);
   }
   function peak(c,index,time,reduced){
-    const p=index?['#3b3a59','#71648e','#a68fb2','#dcc9dc','#fff1e7']:['#354b63','#6e829e','#a6b8cd','#d4dce0','#fbf4e5'];
+    const theme=THEMES[index],p=index===0?['#354b63','#6e829e','#a6b8cd','#d4dce0','#fbf4e5']:index===1?['#3b3a59','#71648e','#a68fb2','#dcc9dc','#fff1e7']:[theme.stone[0],theme.stone[1],theme.leaf[2],theme.stone[2],'#fff1e7'];
     for(const [cx,cy,rx,ry] of [[-13,9,12,17],[13,8,12,20],[0,-5,14,26]]){
       for(let y=-ry;y<=ry;y+=2){
         const width=Math.max(0,Math.floor(rx*(1-Math.abs(y)/ry)/2)*2);
@@ -345,6 +449,6 @@
     for(let i=0;i<6;i++)flower(c,12+i*54,92-i%2*6,theme,i);
     spark(c,93,24,theme.glow,2);spark(c,205,72,theme.glow,2);c.restore();
   }
-  const api={THEMES,rect,oval,spark,flower,backdrop,tile,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
+  const api={THEMES,rect,oval,spark,flower,backdrop,tile,frieze,panel,duck,orb,gem,vignette,ring,shadow,tree,rock,peak,gap,text,finish,medal};
   if(typeof module!=='undefined')module.exports=api;root.SkyPixelArt=api;
 })(typeof window!=='undefined'?window:globalThis);

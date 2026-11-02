@@ -3,8 +3,94 @@
   'use strict';
   const TRACK = { left: 90, right: 510, laneWidth: 84, radius: 16 };
   const LEVELS = [
-    { name: 'Azure ascent', length: 10500, speed: 315, acceleration: 140, spacing: 330, hue: 190 },
-    { name: 'Violet velocity', length: 12500, speed: 380, acceleration: 155, spacing: 350, hue: 258 }
+    {
+      "name": "Azure ascent",
+      "length": 10500,
+      "speed": 315,
+      "acceleration": 140,
+      "spacing": 330,
+      "hue": 190,
+      "difficulty": "CALM",
+      "description": "Follow a limestone trail through luminous ponds and flowering reeds.",
+      "tip": "Learn the rhythm: steer around tall obstacles and jump only the gaps."
+    },
+    {
+      "name": "Violet velocity",
+      "length": 12500,
+      "speed": 380,
+      "acceleration": 155,
+      "spacing": 350,
+      "hue": 258,
+      "difficulty": "FOCUSED",
+      "description": "Moonflowers open above violet water. Paired rocks narrow your choices.",
+      "tip": "Read the whole row before choosing a lane. Ducks cannot be jumped."
+    },
+    {
+      "name": "Amber orchard",
+      "length": 13800,
+      "speed": 410,
+      "acceleration": 150,
+      "spacing": 380,
+      "hue": 35,
+      "difficulty": "BRISK",
+      "description": "Amber leaves drift across old terracotta paths and honey-colored mosaics.",
+      "tip": "Leave space for the duck patrols. The bright striped edges mark every gap."
+    },
+    {
+      "name": "Jade sanctuary",
+      "length": 15000,
+      "speed": 435,
+      "acceleration": 155,
+      "spacing": 400,
+      "hue": 150,
+      "difficulty": "CHALLENGING",
+      "description": "Bamboo, carved jade and quiet water frame a quicker, winding challenge.",
+      "tip": "During crosswinds, the whole track shifts. Keep watching both boundaries."
+    },
+    {
+      "name": "Coral tide",
+      "length": 16200,
+      "speed": 460,
+      "acceleration": 160,
+      "spacing": 420,
+      "hue": 350,
+      "difficulty": "INTENSE",
+      "description": "Shell mosaics and sea-glass paving lead through a glowing coral lagoon.",
+      "tip": "Patrols appear more often. Choose a safe lane before they reach you."
+    },
+    {
+      "name": "Frostpetal pass",
+      "length": 17400,
+      "speed": 485,
+      "acceleration": 165,
+      "spacing": 440,
+      "hue": 205,
+      "difficulty": "EXPERT",
+      "description": "Snow petals settle on pale stone, crystalline inlays and frozen pools.",
+      "tip": "Keep a steady line through nightfall. Your light reveals the next hazard."
+    },
+    {
+      "name": "Ember lanterns",
+      "length": 18600,
+      "speed": 510,
+      "acceleration": 170,
+      "spacing": 460,
+      "hue": 15,
+      "difficulty": "MASTER",
+      "description": "Paper lanterns warm the dusk above plum-colored stone and copper borders.",
+      "tip": "Long breaks arrive more often. Jump shortly before the leading edge."
+    },
+    {
+      "name": "Starlit crown",
+      "length": 19800,
+      "speed": 535,
+      "acceleration": 175,
+      "spacing": 480,
+      "hue": 245,
+      "difficulty": "FINALE",
+      "description": "A celestial garden of constellations, blue marble and gold star mosaics.",
+      "tip": "Bring every skill together: anticipate, steer smoothly and time each jump."
+    }
   ];
   const laneX = lane => TRACK.left + (lane + 0.5) * TRACK.laneWidth;
   // Zero slope at both ends prevents abrupt lighting or road movement.
@@ -26,14 +112,14 @@
   function layout(index) {
     const level = LEVELS[index], objects = [];
     for (let row = 0, d = 900; d < level.length - 500; row++, d += level.spacing * (1 - 0.12 * d / level.length)) {
-      const safe = (row * 3 + index) % 5;
-      if (row % 6 === 3) {
+      const safe = (row*3+index)%5;
+      if (row % (index>=6?5:6) === 3) {
         // A full-width gap is shorter than the minimum jump travel distance.
         objects.push({ type: 'gap', x: 300, d, w: 420, h: 65 });
         objects.push({ type: 'diamond', x: laneX(safe), d: d - 155, w: 20, h: 20 });
       } else {
         const lane = (safe + 2) % 5;
-        objects.push({ type: row > 4 && row % 4 === 1 ? 'moving' : 'block', x: laneX(lane), d, w: 56, h: 62, skin: ['tree', 'rock', 'mountain'][row % 3], phase: row });
+        objects.push({ type: row > 4 && row % (index>=4?3:4) === 1 ? 'moving' : 'block', x: laneX(lane), d, w: 56, h: 62, skin: ['tree', 'rock', 'mountain'][row % 3], phase: row });
         if (row % 3 === 2) objects.push({ type: 'gap', x: laneX((safe + 1) % 5), d, w: 80, h: 100 });
         if (index && row % 2 === 0) objects.push({ type: 'block', x: laneX((safe + 4) % 5), d, w: 56, h: 62, skin: 'rock' });
         objects.push({ type: 'diamond', x: laneX(safe), d, w: 20, h: 20 });
