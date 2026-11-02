@@ -14,7 +14,7 @@ function node(id,dataset={}){
 const routes=[node('route0',{level:'0'}),node('route1',{level:'1'})];
 const controls=['ArrowLeft','ArrowUp','ArrowRight'].map(key=>node(key,{key}));
 const body={classList:{add:(...n)=>n.forEach(x=>classes.add(x)),remove:(...n)=>n.forEach(x=>classes.delete(x)),toggle(n,on){if(on)classes.add(n);else classes.delete(n);}}};
-const sandbox={SkyEngine:E,Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener:(name,fn)=>listeners[name]=fn},document:{body,hidden:false,getElementById:id=>{assert.ok(ids.includes(id));return node(id);},querySelector:node,querySelectorAll:q=>q==='[data-level]'?routes:q==='[data-key]'?controls:[],addEventListener:(name,fn)=>listeners[name]=fn},localStorage:{getItem:k=>saved.get(k)??null,setItem:(k,v)=>saved.set(k,String(v))},requestAnimationFrame(){}};
+const sandbox={SkyEngine:E,SkyPixelArt:require('./pixel-art'),Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener:(name,fn)=>listeners[name]=fn},document:{body,hidden:false,getElementById:id=>{assert.ok(ids.includes(id));return node(id);},querySelector:node,querySelectorAll:q=>q==='[data-level]'?routes:q==='[data-key]'?controls:[],addEventListener:(name,fn)=>listeners[name]=fn},localStorage:{getItem:k=>saved.get(k)??null,setItem:(k,v)=>saved.set(k,String(v))},requestAnimationFrame(){}};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),sandbox);
 const run=code=>vm.runInContext(code,sandbox);
 assert.equal(run('mode'),'ready');assert.match(html,/<h2 id="screen-title">Rolling Sky/);

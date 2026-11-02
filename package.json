@@ -4,7 +4,7 @@
   "private": true,
   "description": "A spec-faithful 2D polish pass on sharon5u's Rolling Sky handoff.",
   "scripts": {
-    "test": "node --test test-engine.js test-effects.js test-spec.js"
+    "test": "node --test test-engine.js test-effects.js test-spec.js test-pixel-art.js"
   },
   "engines": { "node": ">=18" }
 }

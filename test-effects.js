@@ -4,7 +4,7 @@ const E=require('./engine.js');
 const nodes=new Map();
 const context2d=new Proxy({}, {get:(_,key)=>key==='createRadialGradient'||key==='createLinearGradient'?()=>({addColorStop(){}}):()=>{},set:()=>true});
 function node(id){if(!nodes.has(id))nodes.set(id,{textContent:'',style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},setAttribute(){},getContext:()=>context2d});return nodes.get(id);}
-const sandbox={SkyEngine:E,Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener(){}},document:{getElementById:node,querySelector:node,querySelectorAll:()=>[],addEventListener(){}},localStorage:{getItem:()=>null,setItem(){}},requestAnimationFrame(){}};
+const sandbox={SkyEngine:E,SkyPixelArt:require('./pixel-art'),Math,Number,String,Set,window:{matchMedia:()=>({matches:false}),addEventListener(){}},document:{getElementById:node,querySelector:node,querySelectorAll:()=>[],addEventListener(){}},localStorage:{getItem:()=>null,setItem(){}},requestAnimationFrame(){}};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),sandbox);
 const run=code=>vm.runInContext(code,sandbox);
 run("start();state.status='lost';state.deathType='fall';beginDeath();");

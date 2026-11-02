@@ -3,12 +3,14 @@ const E = SkyEngine, $ = id => document.getElementById(id), canvas = $('game'), 
 let selected = 0, state = E.create(), mode = 'ready', last = 0, accumulator = 0, muted = true, audio, best = 0;
 const keys = new Set();
 const PLAYER_Y=575;
-const pixelRatio=Math.min(2,window.devicePixelRatio||1);
-canvas.width=600*pixelRatio;canvas.height=720*pixelRatio;ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+// One real pixel per two world units; CSS enlarges the artwork without smoothing.
+canvas.width=300;canvas.height=360;ctx.setTransform(.5,0,0,.5,0,0);ctx.imageSmoothingEnabled=false;
+const guideCanvas=$('field-guide'),guideCtx=guideCanvas?.getContext('2d');
 let musicStep=-1;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let artClock=0;
 let deathElapsed = 0, particles = [], trail = [], trailClock = 0, collectPulse = 0;
-function resetEffects() { musicStep=-1; deathElapsed=0; particles=[]; trail=[]; trailClock=0; collectPulse=0; document.querySelector('.game-section').style.transform=''; }
+function resetEffects() { artClock=0; musicStep=-1; deathElapsed=0; particles=[]; trail=[]; trailClock=0; collectPulse=0; document.querySelector('.game-section').style.transform=''; }
 function burst(x,y,count,color) {
   if(reducedMotion)return;
   for(let i=0;i<count;i++){const angle=Math.PI*2*i/count; const speed=80+Math.random()*230; particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-80,life:0.7+Math.random()*0.35,max:1.05,color});}
@@ -21,6 +23,7 @@ function beginDeath() {
 }
 function updateEffects(dt) {
   if(mode==='paused')return;
+  if(!reducedMotion)artClock+=dt;
   collectPulse=Math.max(0,collectPulse-dt);
   for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=280*dt;} particles=particles.filter(p=>p.life>0);
   for(const p of trail)p.life-=dt;trail=trail.filter(p=>p.life>0);
@@ -44,9 +47,8 @@ function drawEffects() {
   if(collectPulse>0){ctx.globalAlpha=collectPulse/0.3;ctx.fillStyle='#a9f6ef';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.fillText('+100',state.x,500-(0.3-collectPulse)*80);}
   ctx.restore();
 }
-function drawBall(rotation) {
-  ctx.save();ctx.rotate(rotation);const g=ctx.createRadialGradient(-7,-8,2,0,0,20);g.addColorStop(0,'#ffffdc');g.addColorStop(0.3,'#ceff48');g.addColorStop(1,'#6bc522');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,18,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#528527aa';ctx.lineWidth=2.5;ctx.beginPath();ctx.ellipse(0,0,8,17,0,0,Math.PI*2);ctx.stroke();pixel(-5,-13,5,5,'#f8ffe0');ctx.restore();
-}
+function drawBall(rotation) { SkyPixelArt.orb(ctx,rotation); }
+
 try { const saved=Number(localStorage.getItem('skyline-best'));best=Number.isSafeInteger(saved)&&saved>=0?saved:0; } catch (_) { /* Private browsing can disable storage. */ }
 $('best').textContent = String(best).padStart(5, '0');
 function beep(freq, duration, type = 'sine', volume = .045) {
@@ -78,14 +80,13 @@ function finish() {
 function updateHUD() { const fraction=state.distance/E.LEVELS[selected].length; $('challenge').textContent = fraction>=0.25&&fraction<0.50 ? '☾ NIGHTFALL · FOLLOW YOUR LIGHT' : fraction>=0.55&&fraction<0.65 ? '↔ CROSSWIND · FOLLOW THE ROAD' : '● LIVE FROM THE SKY'; const p = Math.floor(state.distance / E.LEVELS[selected].length * 100); $('score').textContent = String(E.score(state)).padStart(5, '0'); $('percent').textContent = p + '%'; $('diamonds').textContent=state.diamonds+'◇'; $('progress').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', p); $('speed').textContent = (1 + E.LEVELS[selected].acceleration / E.LEVELS[selected].speed * p / 100).toFixed(1) + '×'; }
 $('start').onclick = () => mode === 'paused' ? pause() : start(); $('pause').onclick = pause;
 $('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? 'Audio off' : 'Audio on'; $('sound').setAttribute('aria-pressed', !muted); beep(650, 0.1); };
-document.querySelectorAll('[data-level]').forEach(button => button.onclick = () => { resetEffects(); selected = Number(button.dataset.level); state = E.create(selected); mode = 'ready';document.body?.classList.remove('playing','victory'); keys.clear(); document.querySelectorAll('[data-level]').forEach(b => b.classList.toggle('active', b === button)); $('route-name').textContent = E.LEVELS[selected].name.toUpperCase(); overlay('READY WHEN YOU ARE', 'The sky is yours.', 'Steer around obstacles. Jump the gaps. Follow the diamonds to the finish.', 'Let’s roll ↗', '← → TO STEER · ↑ TO JUMP'); updateHUD(); });
+document.querySelectorAll('[data-level]').forEach(button => button.onclick = () => { resetEffects(); selected = Number(button.dataset.level); state = E.create(selected);if(document.body?.dataset)document.body.dataset.world=String(selected); mode = 'ready';document.body?.classList.remove('playing','victory'); keys.clear(); document.querySelectorAll('[data-level]').forEach(b => b.classList.toggle('active', b === button)); $('route-name').textContent = E.LEVELS[selected].name.toUpperCase(); overlay('READY WHEN YOU ARE', 'The sky is yours.', 'Steer around obstacles. Jump the gaps. Follow the diamonds to the finish.', 'Let’s roll ↗', '← → TO STEER · ↑ TO JUMP'); updateHUD(); });
 function press(key, repeat = false) { if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
 window.addEventListener('keydown', e => { if (['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key)) e.preventDefault(); press(e.key, e.repeat); });
 window.addEventListener('keyup', e => keys.delete(e.key));
 window.addEventListener('blur', () => { keys.clear(); if (mode === 'playing') pause(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'playing') pause(); });
 document.querySelectorAll('[data-key]').forEach(b => { b.onpointerdown = e => { e.preventDefault(); b.setPointerCapture(e.pointerId); press(b.dataset.key); }; b.onpointerup = b.onpointercancel = b.onlostpointercapture = () => keys.delete(b.dataset.key); });
-function rounded(x, y, w, h, r, color) { ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.fill(); }
 // Orthographic top-down projection: equal-size tiles, no vanishing point.
 function project(x,d,onRoad=true){
   return {x:x+(onRoad?E.roadOffset(state):0),y:PLAYER_Y-(d-state.distance),scale:1};
@@ -96,24 +97,23 @@ function poly(points, color) {
 function ground(x1, x2, d1, d2, color) {
   poly([project(x1,d1),project(x2,d1),project(x2,d2),project(x1,d2)],color);
 }
-function pixel(x,y,w,h,color) { ctx.fillStyle=color; ctx.fillRect(x,y,w,h); }
+function pixel(x,y,w,h,color) { SkyPixelArt.rect(ctx,x,y,w,h,color); }
 // Retain the inherited sprite helper, using flat bevels instead of extruded faces.
-function voxel(x,y,w,h,top,front,side){
-  rounded(x,y,w,h,5,side);rounded(x+2,y+2,w-4,h-4,4,front);
-  ctx.strokeStyle=top;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x+5,y+3);ctx.lineTo(x+w-5,y+3);ctx.stroke();
-}
+function voxel(x,y,w,h,top,front,side){ SkyPixelArt.panel(ctx,x,y,w,h,top,front,side); }
 function scenery(o) {
   const p=project(E.objectX(o,state.time),o.d); if(p.y>800 || p.y< -100)return;
-  ctx.save(); ctx.translate(p.x,p.y); ctx.scale(p.scale,p.scale);
-  ctx.fillStyle='#334d4b35';ctx.beginPath();ctx.ellipse(3,5,30,29,0,0,Math.PI*2);ctx.fill();
+  ctx.save(); ctx.translate(Math.round(p.x/2)*2,Math.round(p.y/2)*2); ctx.scale(p.scale,p.scale);
+  SkyPixelArt.oval(ctx,3,5,29,27,'#142e423d');
   const kind=o.type==='moving'?'duck':o.skin;
-  // Orange ground markers show the hazard footprint, including under tall canopies.
-  ctx.strokeStyle='#ff9b45';ctx.lineWidth=2;ctx.strokeRect(-28,-31,56,62);
+  // Small amber corner marks show the inherited hazard footprints.
+  for(const x of [-30,26])for(const y of [-33,29]){pixel(x,y,6,2,'#f1c697');pixel(x,y,2,5,'#f1c697');}
   if(kind==='tree') {
     voxel(-6,-10,12,23,'#f8ad56','#b56a30','#774128');
-    voxel(-25,-27,50,52,'#a3e641','#42b445','#197a4d');
-    voxel(-17,-19,34,36,'#c2f45c','#6cd338','#268c49');
-    pixel(-17,-10,7,6,'#81e33e');pixel(4,-16,7,5,'#d8ff83');
+    const leaf=SkyPixelArt.THEMES[selected].leaf;
+    voxel(-25,-27,50,52,leaf[2],leaf[1],leaf[0]);
+    voxel(-17,-19,34,36,leaf[3],leaf[2],leaf[1]);
+    pixel(-17,-10,7,6,leaf[2]);pixel(4,-16,7,5,leaf[3]);
+    SkyPixelArt.flower(ctx,10,9,SkyPixelArt.THEMES[selected],o.phase);
   } else if(kind==='mountain') {
     voxel(-26,-28,52,56,'#bea1ef','#8d69ce','#6143a2');
     voxel(-18,-19,36,38,'#dac5ff','#ab87e7','#7855b9');
@@ -121,11 +121,7 @@ function scenery(o) {
     pixel(-16,-12,7,5,'#f2f9fb');
   } else if(kind==='duck') {
     const direction=Math.cos(state.time*1.6+o.phase)>=0?1:-1;
-    ctx.scale(direction,1); const walk=Math.sin(state.time*14)*4;
-    pixel(-12,-20+walk,10,5,'#ff8b21');pixel(-12,15-walk,10,5,'#ff8b21');
-    voxel(-25,-14,42,28,'#ffffff','#f7f5de','#d4dfcf');
-    pixel(-17,-8,20,16,'#e3e9d8');voxel(6,-10,20,20,'#fffde7','#fff9d8','#e2dfb5');
-    pixel(25,-4,8,8,'#ffb51b');pixel(18,-5,4,4,'#273d4b');pixel(-30,-6,8,12,'#ffffff');
+    ctx.scale(direction,1);SkyPixelArt.duck(ctx,state.time,o.phase,reducedMotion);
   } else {
     voxel(-25,-27,50,54,'#d8f1ad','#79aa68','#3f6853');
     voxel(-17,-18,34,36,'#e3f7b8','#91bd76','#537d59');pixel(-15,-15,8,6,'#d2eab0');
@@ -133,31 +129,21 @@ function scenery(o) {
   ctx.restore();
 }
 function draw() {
-  const distance=state.distance, violet=selected===1;
-  const sky=ctx.createLinearGradient(0,0,0,720);
-  sky.addColorStop(0,violet?'#29105d':'#101c56');sky.addColorStop(0.6,'#163c87');sky.addColorStop(1,'#091735');
-  ctx.fillStyle=sky;ctx.fillRect(0,0,600,720);
-  // A flat star field and fine circuit lines frame the two-dimensional board.
-  for(let i=0;i<45;i++){const x=(i*173+25)%600,y=(i*89+(reducedMotion?0:distance*.08))%720;ctx.globalAlpha=.15+(i%3)*.09;pixel(x,y,1+i%2,1+i%2,'#bce7ed');}ctx.globalAlpha=1;
-  ctx.strokeStyle=violet?'#b091e526':'#72d6dd26';ctx.lineWidth=1;
-  for(const x of [26,54,546,574]){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,720);ctx.stroke();}
-  if(mode==='playing'&&!reducedMotion){ctx.strokeStyle='#9bdae242';ctx.lineWidth=2;for(let i=0;i<10;i++){const x=i%2?557:43,y=(i*73+distance*.7)%720;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+22);ctx.stroke();}}
+  const distance=state.distance,theme=SkyPixelArt.THEMES[selected];
+  SkyPixelArt.backdrop(ctx,selected,distance,artClock,reducedMotion);
+  if(guideCtx && mode!=='playing' && mode!=='dying')SkyPixelArt.vignette(guideCtx,selected,artClock,reducedMotion);
+  const sky=theme.top;
   // World-indexed tiles never reset or flip color when a row scrolls past.
   const first=Math.floor((distance-300)/84), last= Math.ceil((distance+800)/84);
   for(let row=last;row>=first;row--) {
     const near=row*84,far=near+84;
-    ground(86,90,near,far,'#5bdfc7');ground(510,514,near,far,'#5bdfc7');
+    ground(86,90,near,far,'#8fbca9');ground(510,514,near,far,'#8fbca9');
     for(let lane=0;lane<5;lane++) {
       const x=90+lane*84;
       const path=lane>0&&lane<4;
-      const colors=path?(violet?['#7044c9','#8355df']:['#286aca','#3179df']):['#13866e','#18a17d'];
-      ground(x,x+84,near-0.5,far+0.5,colors[((row+lane)%2+2)%2]);
-      ground(x+2,x+82,near+2,near+3,'#b9f3e736');ground(x+1,x+2,near+2,far-2,'#081f5144');
-      if(row%3===0 && lane===2){ground(x+34,x+50,near+30,near+33,'#b2d8ed55');ground(x+41,x+44,near+25,near+38,'#b2d8ed55');}
-      // Sparse pixel grain travels with each tile, rather than flickering per frame.
-      const seed=((row*13+lane*7)%17+17)%17;
-      ground(x+12+seed,x+21+seed,near+22,near+28,path?(violet?'#a575ef':'#428aed'):'#29b78a');
-      if(!path)ground(x+53,x+59,near+55,near+62,'#62d998');
+      const colors=path?theme.stone:theme.grass;
+      ground(x,x+84,near-.5,far+.5,colors[((row+lane)%2+2)%2]);
+      const p=project(x,far);SkyPixelArt.tile(ctx,p.x,p.y,row,lane,selected);
     }
   }
   // Gaps reveal sky, not a dark painted tile; the soil lip makes edges legible.
@@ -178,7 +164,7 @@ function draw() {
       ctx.save();ctx.translate(p.x,p.y);ctx.scale(1+h/210,1+h/210);drawBall(distance/19);ctx.restore();
       if(h>0){ctx.strokeStyle='#d5ffad88';ctx.lineWidth=1;ctx.beginPath();ctx.arc(p.x,p.y,23+h/8,-Math.PI/2,-Math.PI/2+Math.PI*2*h/65);ctx.stroke();}
     } else if(sprite.o.type==='diamond') {
-      const p=project(sprite.o.x,sprite.d);ctx.save();ctx.translate(p.x,p.y);ctx.scale(p.scale,p.scale);poly([{x:0,y:-15},{x:11,y:0},{x:0,y:15},{x:-11,y:0}],'#00e1ee');poly([{x:0,y:-15},{x:0,y:15},{x:-11,y:0}],'#a6ffff');ctx.strokeStyle='#008fbf';ctx.lineWidth=2;ctx.stroke();ctx.restore();
+      const p=project(sprite.o.x,sprite.d);ctx.save();ctx.translate(Math.round(p.x/2)*2,Math.round(p.y/2)*2);SkyPixelArt.gem(ctx,state.time,sprite.d*.01,reducedMotion);ctx.restore();
     } else scenery(sprite.o);
   }
 
