@@ -140,3 +140,17 @@ English translations:
 > It says there is an error.
 
 Actions: verified that the local entry point and all six source assets exist and that all four test files pass. The reported message points to the chat's visualization wrapper, but no browser stack trace was available. Created a portable `JUGAR.html` containing all styles and scripts to avoid relying on sibling-asset loading in a preview. Scripts execute after the complete interface. Added a repeatable build step and startup/render/jump checks for the actual embedded scripts. Provided direct Chrome/Edge opening instructions. This does not claim that the chat's visualization wrapper itself has been repaired.
+
+## A quieter home and a painted level-selection trail
+
+Original user prompt:
+
+> me gusta arregla la pagina de inicio esta llena de muchas cosas que sobran que se vea bonito pero que no este tan cargada de texto, ademas que uno pueda seleccionar el nivel y que sea como un camino muy bonito con mucho pixel art
+
+English translation:
+
+> I like it. Fix the home page: it is full of unnecessary things. Make it beautiful without so much text. Let players select their level along a beautiful path filled with pixel art.
+
+Actions: replaced the text-heavy two-column home, level-card list and visible statistics with a full painted garden trail and eight native selectable stops. A single dock shows the selected garden, difficulty and Play action. Controls, descriptions, records and tips are available in a closed-by-default How to play popover. Added distinct wide and portrait maps with matching clickable positions, a continuous curved stone path, eight themed garden pockets, ponds, koi, ducks, flowers, bamboo, snow crystals, lanterns and an animated gold selection marker. The actual game appears after Play; returning to the atlas restores the compact home. Static map art is cached, with only small lights and the selected marker redrawn.
+
+Validation: all five test files pass, including map stop selection, home/game/result navigation, standalone four-script startup, both responsive geometries, reduced motion and all eight complete courses. Native-canvas atlas images were inspected in wide and portrait layouts. The portable JUGAR.html includes the new atlas script and home stylesheet. The game engine, course layouts, jump shadow and original specification remain unchanged. Interactive browser layout testing is still pending.
