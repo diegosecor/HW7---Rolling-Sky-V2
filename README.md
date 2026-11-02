@@ -1,160 +1,67 @@
-# Rolling Sky — Moonlit Garden Atlas
+# Rolling Sky V2
 
-**[Play online — Moonlit Garden Atlas](https://diegosecor.github.io/HW7---Rolling-Sky-V2/)**
+A 2D arcade game where you guide a ball along a scrolling path, collect diamonds and avoid obstacles. This is my second version for HW7, based on [sharon5u's original project](https://github.com/sharon5u/gamegame).
 
-Hosted on GitHub Pages. Select a garden on the map and press PLAY LEVEL. No installation required.
+## Play
 
-**Original game design, specification and foundation: [sharon5u](https://github.com/sharon5u/gamegame).**
+**[Play in your browser](https://diegosecor.github.io/HW7---Rolling-Sky-V2/)**
 
-Phase 2 implementation and visual polish: Diego, with AI assistance documented in `prompt_log.md`.
+Choose one of the eight levels on the map, then press **PLAY LEVEL**. You can also download the project and open `JUGAR.html` in Chrome or Edge to play offline.
 
-This version follows the original top-down 2D specification. It starts from the author's received project, rather than from the separate experimental chase-camera version. The inherited course generator, engine, controls and scoring remain the foundation. The two received courses now lead into six additional gardens using the same rules.
+## Controls
 
-## Run
+| Key | Action |
+| --- | --- |
+| Left / Right arrows | Move sideways |
+| Up arrow | Jump over gaps |
+| P | Pause or resume |
+| Space | Replay after a win or loss |
+| Enter | Continue after winning |
 
-Open `JUGAR.html` in Chrome or Edge. This portable copy includes every stylesheet and script, so it does not depend on a preview loading sibling files. If a chat preview reports “An error occurred inside the visualization,” open the browser directly, press Ctrl+O and select `JUGAR.html`. Everything is local: no installation, dependencies, server or internet connection is required to play.
+The ball moves forward automatically. Jump over gaps and steer around obstacles. Use the Audio button to turn sound on or off. Touch controls are also available on mobile devices.
 
-`index.html` remains the editable entry point using the separate source files. After editing those files, regenerate the portable copy with `npm run portable`; `npm test` also rebuilds it automatically. The generated page initializes its scripts after the full interface exists.
+## What changed
 
-- Left / right arrows: steer.
-- Up: jump across gaps. Obstacles are tall and must be avoided.
-- P: pause or resume.
-- Enter after a win: continue to the named next garden (or an unfinished garden if the last one was cleared first).
-- Space: replay the current route after losing or winning.
-- Audio button: toggle synthesized background music and effects.
-- Touch buttons appear on small screens or coarse-pointer devices.
+- Eight levels with different colors, scenery and increasing difficulty.
+- A pixel-art map where you can select any level.
+- More detailed paths, plants, animals and backgrounds.
+- A shaded ball with a jump shadow, sparkles and a fading trail.
+- A simpler menu, clearer level information and updated victory effects.
+- Saved scores and completed-level markers when browser storage is available.
 
-The ball moves forward automatically. Collect cyan diamonds, avoid obstacles and reach the checkered finish. Azure ascent is the introductory course; Violet velocity is faster and has extra obstacles. All eight gardens retain the original nightfall and crosswind sections. The menu hides during play and returns on the results screen. The gold PLAY LEVEL button after a win names the next route; Enter activates the same action. Use Garden atlas to return to selection, or the atlas's own play button to begin the selected route.
+The game keeps the original 2D format and builds on the existing movement, obstacles, scoring and level logic.
 
-## Scope and priorities
+## Project files
 
-1. Keep the inherited engine and course logic.
-2. Correct the essential track-boundary requirement.
-3. Use an orthographic 2D view with constant tile sizes and clear obstacle footprints.
-4. Improve readability and finish the presentation.
-5. Verify the acceptance criteria and document remaining submission tasks.
+- `index.html` — main page used by the online game.
+- `engine.js` — gameplay rules and level settings.
+- `game.js` — controls, game loop, sound and effects.
+- `pixel-art.js` and `atlas-art.js` — game artwork and level map.
+- CSS files — layout and visual styling.
+- `JUGAR.html` — standalone copy for offline play.
+- `SPEC.md` — the original specification.
+- `prompt_log.md` — prompts and English translations documenting AI assistance.
 
-The view has no vanishing point, camera tilt or distance-dependent scale. Jump height changes the ball's sprite size, visual lift and shadow. The ground anchor and collision position remain fixed to the inherited movement rules. A separate, darker ground shadow becomes visible beneath the raised sprite, shrinks with height and returns smoothly on landing.
+## Development
 
-## Pixel-art direction
+The game uses HTML, CSS and JavaScript, with no external runtime dependencies.
 
-The visual layer is now an original pixel-art garden, painted on a 600 × 720 pixel canvas matching the world, with broad two-pixel clusters and single-pixel engraved, botanical and feather details. CSS preserves pixel edges at the displayed size. Azure ascent uses luminous wetlands, teal stone and mossy greens; Violet velocity uses moonflowers, lavender stone and a mauve-blue pond. Band-based gradients, sparse dithering, chipped tile corners, engraved stones, moss, blossoms and lily pads give the board a hand-painted pixel texture.
+With Node.js 18 or newer, run the checks with:
 
-The sphere has a finely shaded porcelain-gold shell and a rotating teal inlay; diamonds have cut faces and reflective edges. The inherited moving duck has three feather palettes, a shaded head and neck ring, patterned wings, webbed feet, blinking and discrete walking poses. Frogs, koi, butterflies, lotus flowers and fireflies decorate the margins. These decorative animals never participate in collisions; amber corner markers identify actual obstacles. The sphere and diamonds also use stepped pixel shading. Fine ferns, leaf veins, layered blossoms, little snails, mineral seams, beaded medallions and carved gap lips finish the larger silhouettes. The home screen uses a dedicated winding atlas with botanical pockets, ponds, koi, ducks, lanterns and a matching pixel-style frame. Eight palettes now extend this direction with autumn leaves, bamboo, coral bubbles, snow petals, paper lanterns and constellations.
-
-All art is generated by local JavaScript rectangle painters. There are no downloaded image assets or additional runtime packages. Decorative animation stops for reduced-motion preferences.
-
-## Eight-garden atlas
-
-| Route | Garden | Visual identity | Pace / estimated run |
-| --- | --- | --- | --- |
-| 01 | Azure ascent | Limestone, lotus engravings and glowing ponds | calm · ~28s |
-| 02 | Violet velocity | Lavender stone, crescent inlays and moonflowers | focused · ~28s |
-| 03 | Amber orchard | Terracotta, leaf carvings and drifting amber leaves | brisk · ~29s |
-| 04 | Jade sanctuary | Jade paving, bamboo engravings and green water | challenging · ~29s |
-| 05 | Coral tide | Shell mosaics, sea glass and coral bubbles | intense · ~30s |
-| 06 | Frostpetal pass | Pale stone, snowflake inlays and snow petals | expert · ~31s |
-| 07 | Ember lanterns | Plum paving, knot engravings and warm lanterns | master · ~31s |
-| 08 | Starlit crown | Blue marble, star medallions and constellations | finale · ~32s |
-
-All gardens are available immediately. The start screen is a full illustrated garden trail with eight selectable stops. It shows the selected garden's name, number and difficulty beside one Play button. The How to play popover holds descriptions, estimated duration, gem records, best scores, tips and control details, keeping the default view quiet. A numbered eight-step journey strip, a permanent LEVEL 01 / 08 HUD label and a brief arrival banner make the current route explicit. The map marks the selected garden with a gold sphere, shows earned stamps and gives each garden its own illustrated seal. Clearing a garden earns its atlas stamp; clearing all eight displays the campaign-complete message. Records and stamps are restored from local storage when permitted. Space continues to replay the current route, while the named PLAY LEVEL button and Enter explicitly advance. Reloading recommends the first unfinished garden. If the final garden was played first, continuing leads to an unfinished route instead of ending navigation.
-
-The track remains tiled, as requested by the original spec, but uses five paving bonds in world-anchored sections: split flagstones, engraved slabs, small cobbles, staggered vertical pavers and worn marble. Large medallions and border friezes vary the rhythm across multiple tiles. Hash-based mineral grain, chips, cracks, moss, flowers and pebbles avoid repeating one large square texture. Carved floor details are decorative; amber hazard corners, cyan diamonds and striped gaps remain distinct.
-
-The home atlas has separate wide and portrait layouts with matching button positions. Its static terrain is painted once per layout/completion-state change; only small lights and the selected marker animate. Static paving in the actual courses is painted into a bounded cache of 48 small row canvases and reused as the course scrolls. This reduces repeated drawing without adding runtime dependencies or changing gameplay. The first two courses retain their original layouts and speed parameters; later gardens add longer courses, faster scrolling, more frequent patrols in routes 5–8 and more full-width gaps in routes 7–8. Steering and jump physics are unchanged by this campaign extension.
-
-## Acceptance criteria report
-
-The numbering below follows the author's original order. The text in `SPEC.md` has not been edited.
-
-| ID | Original acceptance criterion | Status and evidence |
-| --- | --- | --- |
-| E1 | Start screen shows title and basic controls | Met — the opening overlay names Rolling Sky and shows arrow controls. |
-| E2 | Clicking Start begins the game | Met — Start resets state and begins the fixed-step simulation. |
-| E3 | Ball stays near the bottom as the track scrolls downward | Met — the ground anchor is y=575 on a 720-pixel board; the projection is linear in world distance. |
-| E4 | Left/right arrows move the ball left/right | Met — the inherited eased horizontal steering is retained. |
-| E5 | Ball cannot move beyond the track boundaries | Met — corrected the inherited edge-fall behavior with a radius-aware clamp, including during crosswind. |
-| E6 | Static obstacles appear and move toward the player | Met — inherited tree, rock and peak objects scroll with the world. |
-| E7 | Obstacle collisions immediately end the game | Met — collision sets the lost state and freezes simulation immediately; a short impact effect precedes the result overlay. |
-| E8 | Falling into a gap ends the game | Met — grounded gap contact triggers the inherited fall state and animation. |
-| E9 | A game-over message appears | Met — the result overlay shows the cause, score and restart instruction. |
-| E10 | Space after losing restarts from the beginning | Met — Space calls the inherited reset/start flow. |
-| M1 | Points are earned for distance | Met — score includes one point per ten world pixels. |
-| M2 | Collecting a diamond increases score | Met — each collected diamond adds 100 points. |
-| M3 | Current score is displayed | Met — the HUD updates from engine score; a gem counter is also visible. |
-| M4 | Scrolling speed increases through the level | Met — the inherited distance-based acceleration is unchanged. |
-| M5 | A defined finish line exists | Met — all eight levels have a fixed length and a checkered finish. |
-| M6 | Reaching the finish without losing shows victory | Met — the won state shows a result overlay, particles and a gold medal animation. |
-| M7 | A moving obstacle type appears | Met — the inherited horizontal duck patrol is retained. |
-| O1 | At least two levels have different obstacle layouts | Met — both received courses retain their layouts; six additional deterministic courses extend them. |
-| O2 | Background music plays during gameplay | Met — optional quiet synthesized melodies play when Audio is enabled; music pauses with the run. |
-| O3 | Collection and collision sound effects play | Met — the inherited tone effects remain behind the Audio toggle. |
-| O4 | The ball has a rolling animation | Met — the sphere's pixel-shaded surface mark rolls with world distance. |
-| O5 | Highest score is recorded and displayed | Met — the inherited best-score display uses local storage when the browser allows it. |
-
-The overview's 2D top-down presentation, colorful tiled track, contrasting ball, distinct gaps/diamonds and separate start/loss/victory states are also implemented.
-
-## Preserving the original work
-
-The first commit, `4902123` (`Initial commit: unmodified code as received`), contains the author's eight unchanged files. Its Git tree is `3b3d4e7d331f9f703ddca46842848bd148d7a1b4`, identical to the received source commit `2f03b9c`.
-
-The existing `SkyEngine` API and IIFE/module structure, `TRACK`, the two received level definitions, `layout()`, `create()`, `objectX()`, `jump()`, `score()`, distance acceleration, collision checks, collectible rules and status flow are retained. Targeted engine changes enforce track boundaries, keep night hazards readable, and make the existing jump-height curve parabolic. The later campaign extension appends six level definitions and parameterizes patrol/gap frequency for those new courses; the first two layouts are preserved.
-
-In `game.js`, the original input flow, fixed 120 Hz simulation, score/HUD updates, overlays, sound generator, storage, death effects, tile rendering, pixel-art helper and scenery categories remain in use. The projection and sprite coordinates were adapted for a true top-down view. The old floating-island decoration was removed because it did not fit that view. A quiet music scheduler extends the existing sound generator.
-
-The original stylesheet remains unchanged; `polish.css` extends its layout and presentation and `pixel-art.css` adds the garden-themed skin. The original gameplay element IDs and original test files are retained; the home layout is now a separate atlas screen. No new engine or unrelated progression system replaces the foundation. The baseline and subsequent commits make the preservation review traceable; a line-count percentage is not a measure of the assignment's work-preservation rule.
-
-`SPEC.md` has exactly the same bytes as the author's `spec.md`; only capitalization was changed to match the requested deliverable filename.
-
-## Code map
-
-- `engine.js`: inherited pure game rules. Tune `LEVELS` for speed/length, `layout()` for object placement, `step()` for steering/collisions and `height()` for jump clearance.
-- `game.js`: inherited renderer and app loop, extended with atlas records, route navigation and a bounded paving cache. `project()` is the orthographic mapping; `scenery()` draws overhead obstacles; `draw()` renders the board; input handlers, music and effects live alongside the original state transitions.
-- `index.html`: inherited gameplay HUD/overlays plus the compact map home, eight native level buttons, selected-garden dock and optional help.
-- `style.css`: received stylesheet, unchanged.
-- `polish.css`: additive arcade styling, gameplay focus, touch sizing and victory animation.
-- `pixel-art.js`: original pixel palettes, deterministic tile textures, sprite shading, duck poses, decorative pond life and field-guide painting; no gameplay rules.
-- `pixel-art.css`: matching pixel-style typography, gameplay frames and garden colors.
-- `atlas-art.js`: pure wide/tall atlas geometry, a continuous curving trail, eight biome pockets and selected/completed map markers.
-- `home.css`: compact home layout, transparent native map buttons, selected-garden dock and a closed-by-default help popover.
-- `test-engine.js`: inherited rules/course tests, updated for bounded edges and readable nightfall.
-- `test-effects.js`: inherited effect lifecycle tests, updated for orthographic projection.
-- `test-spec.js`: additional acceptance-oriented checks for consistent 2D tile scale, controls, score, state transitions, storage, music and local resource paths.
-- `test-atlas.js`: connected stop geometry, desktop/portrait layouts, integer-grid artwork, reduced motion and the compact default home.
-- `test-pixel-art.js`: pixel-grid alignment, deterministic textures, eight world palettes, paving bonds, motifs, distinct animal palettes, animation, reduced motion and drawing-state balance.
-- `prompt_log.md`: models/tools, verbatim prompts, English translations and an unwanted AI change with its correction.
-
-## Verification
-
-### Complete visual refinement
-
-The second art pass covers the complete board, rather than only the animal sprites. The player is a shaded gold sphere with a rotating teal inlay, layered contact shadows and a matching menu portrait. Its jump enlargement is repainted on the pixel grid to avoid soft edges from fractional scaling.
-
-In the prior complete-board refinement, the first two routes received different stone palettes with worn lotus inlays, mineral grain, moss, grass strips and scalloped edging. The water background includes irregular banks, reeds, reflections, pond animals and fireflies. Bushes, mossy rocks and mountain-crystal clusters replace the old nested block shapes. Cyan diamonds, recessed gaps with striped lips, bitmap score effects, a labeled finish line and a laurel medal complete the same visual direction. The original engine, course layouts and specification were not edited during this pass.
-
-Static native-canvas renders were inspected for both routes, a jump, nightfall, the finish and the victory medal. This verifies the drawing code's appearance; interactive browser layout, audio and touch remain manual checks.
-
-With Node.js 18 or newer, run `npm test`. No package installation is needed. The equivalent command is:
-
-```text
-node --test test-engine.js test-effects.js test-spec.js test-pixel-art.js test-atlas.js
+```sh
+npm test
 ```
 
-Tests verify home-to-game and return-to-map transitions, eight map selections and standalone atlas startup. They also traverse all eight courses to the finish and exercise gameplay, effects, input, atlas navigation, named destinations and the Enter shortcut, first-unfinished continuation after reload, replay behavior, per-route records, all-gardens victory and damaged-storage recovery. Orthographic checks verify constant scale and 84-pixel tile widths at different distances in every route, with a small floating-point tolerance. Automated renderer checks use a simulated canvas. Native-canvas raster previews additionally exercise the actual cached renderer for all eight boards; these were visually inspected and are not interactive browser screenshots.
+This also updates `JUGAR.html`. To rebuild only the offline copy after changing the source files, run:
 
-## Known limitations and deliberate tradeoffs
+```sh
+npm run portable
+```
 
-- Interactive playtesting of the complete interface in the user's browser is still needed. Reviewing static raster art does not verify browser layout, audio or touch behavior.
-- Browsers require user interaction before audio can start. Audio is muted initially.
-- Some browsers restrict local storage for local files; the game remains playable but cannot guarantee persistent best scores in that case.
-- Art and music are procedural to keep the project portable and asset-free. This is an arcade jump used for gap clearance, not a 3D physics simulation.
-- The original start/loss/win structure is preserved. The impact/fall animation deliberately delays the result message, while the world stops immediately.
+The automated checks cover gameplay, level navigation and rendering logic. Browser layout, audio and touch controls still need manual testing.
 
-## Next steps and submission
+## Credits
 
-1. Play all eight routes in the target browser and check touch controls and Audio.
-2. Write `HANDOFF_REPORT.md` personally. The assignment explicitly requires the student to write that reflection without AI; it has intentionally not been generated here.
-3. Review the baseline and changes against the preservation requirement.
-4. Publish this repository publicly, then submit both assignment repository links in the required Google form.
+Original design, specification and code: [sharon5u](https://github.com/sharon5u/gamegame).
 
-This folder has local commits. It has not been published or submitted.
+Adaptation and improvements: Diego, with AI assistance recorded in `prompt_log.md`. The original specification is preserved in `SPEC.md`, and the received version is kept in the Git history.

@@ -180,3 +180,15 @@ English translation:
 > Upload it here: https://github.com/diegosecor/HW7---Rolling-Sky-V2 and make it playable.
 
 Actions: prepare the final 2D project for GitHub and GitHub Pages, preserving the original attribution and local development history.
+
+## Simplify the README
+
+Original user prompt:
+
+> revisa mi readme, y que sea mas normal
+
+English translation:
+
+> Review my README and make it sound more natural.
+
+Actions: shortened the README to a straightforward project introduction, play link, controls, improvements, main files, development commands and credits. Removed repeated implementation details and outdated statements that the project had not been published. Kept original-author attribution and disclosure of AI assistance.
