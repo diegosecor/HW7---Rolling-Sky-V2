@@ -74,3 +74,19 @@ English translation:
 Actions: redesigned the player as a shaded gold sphere with a rotating teal inlay and layered shadow; replaced fractional jump stretching with pixel-grid sprite repainting; redrew stone paving, lotus floor inlays, grass, moss, path borders, water banks and reeds. Replaced nested block obstacles with organic overhead bushes, faceted mossy stones and mountain-crystal clusters. Updated diamond facets, gap depth and striped lips, trails, impact rings, bitmap score text, finish decoration, menu portrait and victory medal/confetti. The UI uses the actual game sprite, including the victory portrait, and no longer blurs the board behind its menu.
 
 Validation: all four existing automated test files pass, with the pixel-rendering contract extended to the new painters and jump sizes. Native-canvas images were inspected for both complete boards, jumping, nightfall, the finish line and the victory medal. A soft jump sprite discovered during review was corrected. These are offline drawing previews, not interactive browser tests. This pass leaves `engine.js`, both course layouts, the original stylesheet and `SPEC.md` unchanged. Work remains in `gamegame-2d-final`; the earlier 3D experiment is a separate folder.
+
+## More levels, information and less repetitive paving
+
+Original user prompt:
+
+> me gusta muchsisimo quiero mas detalle mas informacion , mas niveles y que sea muy bonitooooo el suelo se ve repetitivo quiero que tenga mas detalle
+
+English translation:
+
+> I love it. I want more detail, more information, more levels, and a beautiful overall result. The ground looks repetitive, so give it more detail.
+
+Actions: expanded the same 2D game from two to eight gardens, retaining the first two course layouts and speed settings. Added Amber orchard, Jade sanctuary, Coral tide, Frostpetal pass, Ember lanterns and Starlit crown with distinct palettes, engraved floor motifs and atmospheric animation. Replaced the single repeated paving pattern with five section-based bonds, larger medallions, border friezes and deterministic surface wear. Added an eight-route atlas, descriptions, difficulty, estimated duration, gem availability/records, best scores, practical tips and a collapsible field manual. Added per-route completion stamps, saved records, Next garden and return-to-atlas actions, and an all-eight-gardens victory message. The jump and steering rules remain unchanged.
+
+Review corrections: an initial alternative safe-lane sequence failed the level-three traversal check because it demanded abrupt crossings. The received safe-lane progression was restored while keeping the new course lengths and challenge cadence. The test controller now advances only after a hazard's actual collision footprint has passed. Expanding the projection checks exposed sub-picometer floating-point differences; the geometric checks now use a 1e-9 tolerance instead of exact equality. No failed traversal check was removed.
+
+Validation: all four test files pass, including simulated completion of all eight courses, campaign navigation, saved stamps, all-gardens victory and recovery from damaged storage. Pixel-art checks cover all eight palettes, paving sections and decorative motifs. Native-canvas images of all eight complete boards were rendered and visually reviewed. A bounded 48-row paving cache reduced the local native drawing sample from about 12.3 to 4.1 ms per frame; this is not a browser frame-rate measurement. Interactive browser layout, audio and touch still require a manual check. The original `SPEC.md` and `style.css` remain unchanged.
