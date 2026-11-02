@@ -88,7 +88,7 @@ function updateEffects(dt) {
 }
 function drawEffects() {
   ctx.save();
-  for(const p of trail){ctx.globalAlpha=p.life/0.24*0.22;SkyPixelArt.oval(ctx,p.x,p.y,12*p.life/0.24,10*p.life/0.24,'#f5d59b');}
+  for(const p of trail){ctx.globalAlpha=p.life/0.24*0.22*(1-E.height(state)/65*.75);SkyPixelArt.oval(ctx,p.x,p.y,12*p.life/0.24,10*p.life/0.24,'#f5d59b');}
   for(const p of particles){ctx.globalAlpha=Math.min(1,p.life/p.max);pixel(p.x,p.y,5,5,p.color);}
   ctx.globalAlpha=1;
   if(mode==='dying'&&state.deathType==='crash'){
@@ -237,11 +237,10 @@ function draw() {
   if(state.status!=='lost')sprites.push({d:distance,ball:true});sprites.sort((a,b)=>b.d-a.d);
   for(const sprite of sprites) {
     if(sprite.ball) {
-      const p=project(state.x,distance,false),h=E.height(state);
+      const p=project(state.x,distance,false),h=E.height(state),lift=Math.round(h*.55);
       SkyPixelArt.shadow(ctx,p.x,p.y,h);
-      // Repaint the enlarged jump sprite on the pixel grid instead of stretching it.
-      ctx.save();ctx.translate(Math.round(p.x/2)*2,Math.round(p.y/2)*2);drawBall(distance/19,1+h/240);ctx.restore();
-      if(h>0){ctx.globalAlpha=.16+h/240;SkyPixelArt.ring(ctx,p.x,p.y,25+h/9,'#f2dcaa',2);ctx.globalAlpha=1;}
+      // Lift only the artwork: its ground anchor and collision position stay fixed.
+      ctx.save();ctx.translate(Math.round(p.x/2)*2,Math.round((p.y-lift)/2)*2);drawBall(distance/19,1+h/240);ctx.restore();
     } else if(sprite.o.type==='diamond') {
       const p=project(sprite.o.x,sprite.d);ctx.save();ctx.translate(Math.round(p.x/2)*2,Math.round(p.y/2)*2);SkyPixelArt.gem(ctx,state.time,sprite.d*.01,reducedMotion);ctx.restore();
     } else scenery(sprite.o);

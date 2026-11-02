@@ -453,10 +453,12 @@
     const count=Math.max(24,Math.ceil(r*2));for(let i=0;i<count;i++){const a=i/count*Math.PI*2;rect(c,x+Math.cos(a)*r,y+Math.sin(a)*r,size,size,color);}
   }
   function shadow(c,x,y,height){
-    const k=Math.min(1,height/65);
-    oval(c,x+3+k*6,y+4+k*5,23-k*5,20-k*5,'#102c4620');
-    oval(c,x+3+k*6,y+4+k*5,18-k*4,15-k*4,'#112b4940');
-    oval(c,x+2+k*5,y+3+k*4,12-k*3,10-k*3,'#152b494d');
+    const k=Math.max(0,Math.min(1,height/65)),sx=x+4+k*8,sy=y+6+k*8;
+    const shade=alpha=>'#081b2b'+Math.round(alpha*255).toString(16).padStart(2,'0');
+    // The shadow stays on the road while the sphere rises away from it.
+    oval(c,sx,sy,26-k*6,15-k*5,shade(.17-k*.04));
+    oval(c,sx,sy,21-k*5,11-k*3,shade(.35-k*.10));
+    oval(c,sx,sy,14-k*3,7-k*2,shade(.48-k*.12));
   }
   function gem(c,time,phase,reduced){
     const frame=reduced?0:Math.floor(time*5+phase)%4,p=['#244356','#3d788e','#65acb8','#8ed8d2','#c3f1df','#efffe9'];

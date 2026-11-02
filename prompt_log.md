@@ -106,3 +106,17 @@ Actions: made progression explicit with a permanent numbered level label, an eig
 The drawing surface now matches the 600 × 720 world, retaining broad two-pixel clusters while adding one-pixel finishing: porcelain-gold sphere shading, teal inlay, crystal facets, feather strokes, leaf veins, layered flowers, ferns, snails, mineral seams, medallion beading and carved gap edges. The static paving cache remains bounded to 48 rows. Steering, jumping, collisions and all eight course layouts were left unchanged.
 
 Validation: automated checks cover named destinations, the Enter shortcut, current-level labels, the first-unfinished recommendation on reload, final-garden continuation, storage recovery, all eight traversable courses and integer-grid artwork. Native-canvas renders were reviewed for all eight boards, all object categories, the field guide and eight seals. An overly contrasting feather pattern found in the enlarged art review was softened before completion. This is an offline drawing review; browser layout, audio and touch are not interactively verified.
+
+## Make the jump shadow visible
+
+Original user prompt:
+
+> quiero que generes una sumbra cuando salto como que no se nota
+
+English translation:
+
+> I want a shadow when I jump, because the jump is barely noticeable.
+
+Actions: strengthened the layered ground shadow and made its footprint shrink and soften with jump height. The sphere artwork now rises above its fixed ground anchor, revealing the shadow instead of covering it. Removed the old airborne ring and reduced trail brightness in the air so it does not wash out the shadow. This is a visual adjustment; jump timing, height, steering and collision rules remain unchanged.
+
+Validation: all four existing test files pass. Native-canvas previews of grounded, apex and descending poses were inspected, including shadow contrast on all eight garden palettes. Interactive browser playtesting was not performed.

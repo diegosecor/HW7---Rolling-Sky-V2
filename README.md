@@ -28,7 +28,7 @@ The ball moves forward automatically. Collect cyan diamonds, avoid obstacles and
 4. Improve readability and finish the presentation.
 5. Verify the acceptance criteria and document remaining submission tasks.
 
-The view has no vanishing point, camera tilt or distance-dependent scale. Jump height changes the ball's scale and shadow, rather than moving its ground position forward.
+The view has no vanishing point, camera tilt or distance-dependent scale. Jump height changes the ball's sprite size, visual lift and shadow. The ground anchor and collision position remain fixed to the inherited movement rules. A separate, darker ground shadow becomes visible beneath the raised sprite, shrinks with height and returns smoothly on landing.
 
 ## Pixel-art direction
 
