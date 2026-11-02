@@ -154,3 +154,29 @@ English translation:
 Actions: replaced the text-heavy two-column home, level-card list and visible statistics with a full painted garden trail and eight native selectable stops. A single dock shows the selected garden, difficulty and Play action. Controls, descriptions, records and tips are available in a closed-by-default How to play popover. Added distinct wide and portrait maps with matching clickable positions, a continuous curved stone path, eight themed garden pockets, ponds, koi, ducks, flowers, bamboo, snow crystals, lanterns and an animated gold selection marker. The actual game appears after Play; returning to the atlas restores the compact home. Static map art is cached, with only small lights and the selected marker redrawn.
 
 Validation: all five test files pass, including map stop selection, home/game/result navigation, standalone four-script startup, both responsive geometries, reduced motion and all eight complete courses. Native-canvas atlas images were inspected in wide and portrait layouts. The portable JUGAR.html includes the new atlas script and home stylesheet. The game engine, course layouts, jump shadow and original specification remain unchanged. Interactive browser layout testing is still pending.
+
+## A sparkling sphere and a luminous wake
+
+Original user prompt:
+
+> PON MAS BRILLOS Y COMO UNA ESTELA QUE DEJA EL CIRCULO SERIA INTERESANTE
+
+English translation:
+
+> Add more sparkles and a trail left behind by the circle. That would be interesting.
+
+Actions: added a longer fading pixel-art wake with a golden core, garden-colored glow and scattered star-shaped sparks. Samples retain horizontal position, world distance and jump lift, so the trail follows steering and jumping. The wake renders below obstacles. Added a soft sphere halo and three glints. Reduced-motion mode keeps static glints without the moving trail. Physics remain unchanged.
+
+Validation: all five existing test files pass. Regenerated the portable JUGAR.html with the new effects.
+
+## Publish the playable version
+
+Original user prompt:
+
+> Subelo aqui https://github.com/diegosecor/HW7---Rolling-Sky-V2 y que se puede jugar
+
+English translation:
+
+> Upload it here: https://github.com/diegosecor/HW7---Rolling-Sky-V2 and make it playable.
+
+Actions: prepare the final 2D project for GitHub and GitHub Pages, preserving the original attribution and local development history.

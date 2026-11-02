@@ -1241,14 +1241,32 @@ function updateEffects(dt) {
   collectPulse=Math.max(0,collectPulse-dt);
   for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=280*dt;} particles=particles.filter(p=>p.life>0);
   for(const p of trail)p.life-=dt;trail=trail.filter(p=>p.life>0);
-  if(mode==='playing'&&!reducedMotion){trailClock+=dt;if(trailClock>0.025){trailClock=0;trail.push({x:state.x,y:PLAYER_Y,life:0.24});}for(const p of trail)p.y+=180*dt;}
+  if(mode==='playing'&&!reducedMotion){
+    trailClock+=dt;
+    if(trailClock>=0.025){trailClock%=0.025;trail.push({x:state.x,d:state.distance,lift:Math.round(E.height(state)*.55),life:0.65,phase:artClock*19});}
+  }
   if(mode==='dying'){deathElapsed+=dt;if(deathElapsed>=(state.deathType==='fall'?1.15:0.85))finish();}
   const shake=mode==='dying'&&state.deathType==='crash'&&!reducedMotion?12*Math.pow(Math.max(0,1-deathElapsed/0.55),2):0;
   document.querySelector('.game-section').style.transform=shake?`translate(${Math.sin(deathElapsed*95)*shake}px,${Math.cos(deathElapsed*117)*shake*0.65}px)`:'';
 }
+function drawTrail() {
+  ctx.save();
+  const color=SkyPixelArt.THEMES[selected].glow;
+  for(const p of trail){
+    const t=Math.max(0,p.life/.65),age=1-t,y=PLAYER_Y+state.distance-p.d-p.lift;
+    ctx.globalAlpha=.14*t;
+    SkyPixelArt.oval(ctx,p.x,y,19*t,13*t,color);
+    ctx.globalAlpha=.46*t*t;
+    SkyPixelArt.oval(ctx,p.x,y,9*t,7*t,'#ffe7a7');
+    ctx.globalAlpha=.85*t;
+    const drift=Math.sin(p.phase)* (8+age*23);
+    SkyPixelArt.spark(ctx,p.x+drift,y+Math.cos(p.phase)*9,'#fff5cc',t>.5?2:1);
+    if(Math.cos(p.phase)>0)SkyPixelArt.rect(ctx,p.x-drift,y+14,2,2,color);
+  }
+  ctx.restore();
+}
 function drawEffects() {
   ctx.save();
-  for(const p of trail){ctx.globalAlpha=p.life/0.24*0.22*(1-E.height(state)/65*.75);SkyPixelArt.oval(ctx,p.x,p.y,12*p.life/0.24,10*p.life/0.24,'#f5d59b');}
   for(const p of particles){ctx.globalAlpha=Math.min(1,p.life/p.max);pixel(p.x,p.y,5,5,p.color);}
   ctx.globalAlpha=1;
   if(mode==='dying'&&state.deathType==='crash'){
@@ -1393,12 +1411,20 @@ function draw() {
     for(let r=0;r<2;r++)for(let c=0;c<14;c++)ground(90+c*30,120+c*30,finish+r*24,finish+(r+1)*24,(r+c)%2?theme.stone[0]:'#eee0b5');
     const p=project(90,finish+48);SkyPixelArt.finish(ctx,p.x,p.y,420,selected);
   }
+  // Draw the fading wake below obstacles, retaining each sample's jump height.
+  drawTrail();
   const sprites=state.objects.filter(o=>o.type!=='gap'&&!o.collected&&o.d>distance-300&&o.d<distance+800).map(o=>({d:o.d,o}));
   if(state.status!=='lost')sprites.push({d:distance,ball:true});sprites.sort((a,b)=>b.d-a.d);
   for(const sprite of sprites) {
     if(sprite.ball) {
       const p=project(state.x,distance,false),h=E.height(state),lift=Math.round(h*.55);
       SkyPixelArt.shadow(ctx,p.x,p.y,h);
+      ctx.save();ctx.globalAlpha=.12;SkyPixelArt.oval(ctx,p.x,p.y-lift,30,27,theme.glow);ctx.restore();
+      for(let i=0;i<3;i++){
+        const a=(reducedMotion?0:artClock*1.6)+i*Math.PI*2/3;
+        ctx.save();ctx.globalAlpha=reducedMotion?.55:.5+.3*Math.sin(artClock*4+i);
+        SkyPixelArt.spark(ctx,p.x+Math.cos(a)*29,p.y-lift+Math.sin(a)*26,'#fff2c2',i===0?2:1);ctx.restore();
+      }
       // Lift only the artwork: its ground anchor and collision position stay fixed.
       ctx.save();ctx.translate(Math.round(p.x/2)*2,Math.round((p.y-lift)/2)*2);drawBall(distance/19,1+h/240);ctx.restore();
     } else if(sprite.o.type==='diamond') {
