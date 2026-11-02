@@ -10,6 +10,15 @@ try {
     journal[i]={cleared:entry.cleared===true,best:Number.isSafeInteger(entry.best)&&entry.best>=0?entry.best:0,gems:Number.isSafeInteger(entry.gems)&&entry.gems>=0?Math.min(entry.gems,E.layout(i).filter(o=>o.type==='diamond').length):0};
   }
 } catch(_) { /* A damaged or unavailable journal never prevents a run. */ }
+function nextGarden(){
+  if(journal.every(j=>j.cleared))return null;
+  if(selected<E.LEVELS.length-1)return selected+1;
+  const remaining=journal.findIndex((j,i)=>!j.cleared&&i!==selected);
+  return remaining<0?null:remaining;
+}
+function advanceGarden(){
+  const target=nextGarden();if(mode==='won'&&target!==null){selectLevel(target);start();}
+}
 function updateJournal(){
   const level=E.LEVELS[selected],theme=SkyPixelArt.THEMES[selected],total=E.layout(selected).filter(o=>o.type==='diamond').length;
   $('campaign-count').textContent=journal.filter(j=>j.cleared).length+' / '+E.LEVELS.length+' CLEARED';
@@ -18,9 +27,19 @@ function updateJournal(){
   const seconds=Math.round(level.length/level.acceleration*Math.log(1+level.acceleration/level.speed));
   $('level-duration').textContent='~'+seconds+'s';$('level-gems').textContent=journal[selected].gems+' / '+total;
   $('level-best').textContent=journal[selected].best?String(journal[selected].best):'—';$('level-tip').textContent=level.tip;
+  const next=nextGarden(),destination=next===null?'ALL GARDENS CLEARED':'NEXT '+String(next+1).padStart(2,'0')+' · '+E.LEVELS[next].name.toUpperCase();
+  $('level-next').textContent=destination;$('journey-next').textContent=destination;
+  $('journey-current').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' OF '+String(E.LEVELS.length).padStart(2,'0');
+  document.querySelectorAll('[data-step]').forEach(step=>{
+    const i=Number(step.dataset.step);step.classList.toggle('is-current',i===selected);
+    step.classList.toggle('is-cleared',journal[i].cleared);step.classList.toggle('is-next',i===next);
+    step.setAttribute('aria-current',i===selected?'step':'false');
+    step.setAttribute('aria-label','Level '+(i+1)+': '+E.LEVELS[i].name+(i===selected?', current':journal[i].cleared?', cleared':i===next?', next':''));
+  });
   document.querySelectorAll('[data-level]').forEach(b=>{
     const i=Number(b.dataset.level);b.classList.toggle('completed',journal[i].cleared);
-    b.classList.toggle('active',i===selected);b.setAttribute('aria-pressed',i===selected);
+    b.dataset.status=i===selected?(journal[i].cleared?'CURRENT · CLEARED':'CURRENT'):journal[i].cleared?'CLEARED ✓':i===next?'NEXT →':'EXPLORE';
+    b.classList.toggle('is-next',i===next);b.classList.toggle('active',i===selected);b.setAttribute('aria-pressed',i===selected);
     b.setAttribute('aria-label',E.LEVELS[i].name+', '+E.LEVELS[i].difficulty+(journal[i].cleared?', cleared':''));
   });
 }
@@ -36,15 +55,15 @@ function selectLevel(index){
   updateHUD();updateJournal();
 }
 const PLAYER_Y=575;
-// One real pixel per two world units; CSS enlarges the artwork without smoothing.
-canvas.width=300;canvas.height=360;ctx.setTransform(.5,0,0,.5,0,0);ctx.imageSmoothingEnabled=false;
+// Keep a full world-pixel canvas for fine engraved and feather details.
+canvas.width=600;canvas.height=720;ctx.setTransform(1,0,0,1,0,0);ctx.imageSmoothingEnabled=false;
 const guideCanvas=$('field-guide'),guideCtx=guideCanvas?.getContext('2d');
 const portrait=$('hero-portrait'),portraitCtx=portrait?.getContext('2d');
 let musicStep=-1;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-let artClock=0;
+let artClock=0,introRemaining=0;
 let deathElapsed = 0, particles = [], trail = [], trailClock = 0, collectPulse = 0;
-function resetEffects() { artClock=0; musicStep=-1; deathElapsed=0; particles=[]; trail=[]; trailClock=0; collectPulse=0; document.querySelector('.game-section').style.transform=''; }
+function resetEffects() { introRemaining=0;$('level-banner').hidden=true;artClock=0; musicStep=-1; deathElapsed=0; particles=[]; trail=[]; trailClock=0; collectPulse=0; document.querySelector('.game-section').style.transform=''; }
 function burst(x,y,count,color) {
   if(reducedMotion)return;
   for(let i=0;i<count;i++){const angle=Math.PI*2*i/count; const speed=80+Math.random()*230; particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-80,life:0.7+Math.random()*0.35,max:1.05,color});}
@@ -58,6 +77,7 @@ function beginDeath() {
 function updateEffects(dt) {
   if(mode==='paused')return;
   if(!reducedMotion)artClock+=dt;
+  introRemaining=Math.max(0,introRemaining-dt);$('level-banner').hidden=mode!=='playing'||introRemaining===0;
   collectPulse=Math.max(0,collectPulse-dt);
   for(const p of particles){p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=280*dt;} particles=particles.filter(p=>p.life>0);
   for(const p of trail)p.life-=dt;trail=trail.filter(p=>p.life>0);
@@ -99,9 +119,9 @@ function overlay(label, title, copy, button, hint) {
   $('next-route').hidden=true;$('back-map').hidden=mode==='ready';$('run-summary').hidden=true;
   $('overlay').classList.remove('hidden'); $('screen-label').textContent = label; $('screen-title').textContent = title; $('screen-copy').textContent = copy; $('start').textContent = button; $('screen-hint').textContent = hint;
 }
-function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
+function start() { resetEffects(); state = E.create(selected); mode = 'playing';document.body?.classList.add('playing');document.body?.classList.remove('victory'); keys.clear(); accumulator = 0; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ';$('pause').setAttribute('aria-label','Pause game'); beep(440, 0.15); introRemaining=2.2;$('banner-title').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' · '+E.LEVELS[selected].name.toUpperCase();$('level-banner').hidden=false;updateHUD();document.querySelector('.game-section').scrollIntoView?.({block:'start',behavior:'auto'}); }
 function pause() {
-  if (mode === 'playing') { mode = 'paused'; keys.clear(); overlay('TAKE A BREATHER', 'Sky on standby.', 'Your run is right where you left it.', 'Continue ↗', 'P TO RESUME'); $('pause').textContent = '▶'; }
+  if (mode === 'playing') { mode = 'paused';$('level-banner').hidden=true; keys.clear(); overlay('TAKE A BREATHER', 'Sky on standby.', 'Your run is right where you left it.', 'Continue ↗', 'P TO RESUME'); $('pause').textContent = '▶'; }
   else if (mode === 'paused') { mode = 'playing'; $('overlay').classList.add('hidden'); $('pause').textContent = 'Ⅱ'; }
   $('pause').setAttribute('aria-label', mode === 'paused' ? 'Resume game' : 'Pause game');
 }
@@ -117,23 +137,31 @@ function finish() {
   overlay(mode === 'won' ? 'ROUTE COMPLETE' : 'EVERY RUN IS A NEW START', mode === 'won' ? 'Above and beyond.' : 'One more roll?', `${mode === 'won' ? 'Finish line reached!' : state.reason} Score: ${score} · Diamonds: ${state.diamonds}`, 'Roll again ↗', 'SPACE TO RESTART · OR CHOOSE ANOTHER ROUTE');
   $('run-summary').hidden=false;$('run-summary').textContent='GARDEN '+String(selected+1).padStart(2,'0')+' / '+E.LEVELS.length+' · '+state.diamonds+' / '+total+' GEMS · BEST '+record.best;
   if(mode==='won'){
-    $('screen-label').textContent=allClear?'ALL EIGHT GARDENS CLEARED':'GARDEN STAMP EARNED';
-    $('screen-title').textContent=allClear?'The gardens are yours.':'A little more wonder.';
+    $('screen-label').textContent=allClear?'ALL EIGHT GARDENS CLEARED':'LEVEL '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0')+' COMPLETE';
+    $('screen-title').textContent=allClear?'The gardens are yours.':'Level '+String(selected+1).padStart(2,'0')+' cleared!';
     $('screen-copy').textContent=allClear?'Eight gardens. Every finish. A beautiful journey. Score: '+score:'You cleared '+E.LEVELS[selected].name+'. Score: '+score;
-    $('next-route').hidden=selected===E.LEVELS.length-1;
+    const target=nextGarden();$('next-route').hidden=target===null;
+    if(target!==null){
+      $('next-route').textContent='PLAY LEVEL '+String(target+1).padStart(2,'0')+' · '+E.LEVELS[target].name.toUpperCase()+' →';
+      $('screen-hint').textContent='ENTER: NEXT LEVEL · SPACE: REPLAY THIS LEVEL';
+      $('next-route').focus?.();
+    }else $('screen-hint').textContent='ALL EIGHT CLEARED · SPACE TO REPLAY';
+    $('start').textContent='Replay level '+String(selected+1).padStart(2,'0')+' ↺';
   }
   if(mode==='won'){beep(880,0.35);burst(300,350,24,'#f4d39c');burst(300,350,18,'#a0d5c1');burst(300,350,18,'#e6b7c8');}
 }
-function updateHUD() { const fraction=state.distance/E.LEVELS[selected].length; $('challenge').textContent = fraction>=0.25&&fraction<0.50 ? '☾ NIGHTFALL · FOLLOW YOUR LIGHT' : fraction>=0.55&&fraction<0.65 ? '↔ CROSSWIND · FOLLOW THE ROAD' : String(selected+1).padStart(2,'0')+' / '+E.LEVELS.length+' · '+SkyPixelArt.THEMES[selected].name.toUpperCase(); const p = Math.floor(state.distance / E.LEVELS[selected].length * 100); $('score').textContent = String(E.score(state)).padStart(5, '0'); $('percent').textContent = p + '%'; $('diamonds').textContent=state.diamonds+'◇'; $('progress').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', p); $('speed').textContent = (1 + E.LEVELS[selected].acceleration / E.LEVELS[selected].speed * p / 100).toFixed(1) + '×'; }
+function updateHUD() { $('current-level').textContent='LEVEL '+String(selected+1).padStart(2,'0')+' / '+String(E.LEVELS.length).padStart(2,'0');const fraction=state.distance/E.LEVELS[selected].length; $('challenge').textContent = fraction>=0.25&&fraction<0.50 ? '☾ NIGHTFALL · FOLLOW YOUR LIGHT' : fraction>=0.55&&fraction<0.65 ? '↔ CROSSWIND · FOLLOW THE ROAD' : String(selected+1).padStart(2,'0')+' / '+E.LEVELS.length+' · '+SkyPixelArt.THEMES[selected].name.toUpperCase(); const p = Math.floor(state.distance / E.LEVELS[selected].length * 100); $('score').textContent = String(E.score(state)).padStart(5, '0'); $('percent').textContent = p + '%'; $('diamonds').textContent=state.diamonds+'◇'; $('progress').style.width = p + '%'; document.querySelector('.progress').setAttribute('aria-valuenow', p); $('speed').textContent = (1 + E.LEVELS[selected].acceleration / E.LEVELS[selected].speed * p / 100).toFixed(1) + '×'; }
 $('start').onclick = () => mode === 'paused' ? pause() : start(); $('pause').onclick = pause;
-$('next-route').onclick=()=>{if(mode==='won'&&selected<E.LEVELS.length-1){selectLevel(selected+1);start();}};
+$('next-route').onclick=advanceGarden;
 $('back-map').onclick=()=>{selectLevel(selected);$('garden-atlas').scrollIntoView?.({block:'start',behavior:reducedMotion?'auto':'smooth'});};
 $('play-selected').onclick=start;
 $('sound').onclick = () => { muted = !muted; $('sound').textContent = muted ? 'Audio off' : 'Audio on'; $('sound').setAttribute('aria-pressed', !muted); beep(650, 0.1); };
 document.querySelectorAll('[data-level]').forEach(button=>button.onclick=()=>selectLevel(Number(button.dataset.level)));
-updateJournal();
-function press(key, repeat = false) { if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
-window.addEventListener('keydown', e => { if (['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key)) e.preventDefault(); press(e.key, e.repeat); });
+const pendingGarden=journal.findIndex(j=>!j.cleared);
+if(pendingGarden>0)selectLevel(pendingGarden);else {updateJournal();updateHUD();}
+document.querySelectorAll('[data-symbol]').forEach(badge=>SkyPixelArt.emblem(badge.getContext('2d'),Number(badge.dataset.symbol)));
+function press(key, repeat = false) { if(key==='Enter'&&!repeat&&mode==='won')advanceGarden(); if (key === 'ArrowUp' && !repeat && mode === 'playing') { E.jump(state); beep(330, 0.1); } if (key.toLowerCase() === 'p' && !repeat) pause(); if (key === ' ' && !repeat && ['lost', 'won'].includes(mode)) start(); keys.add(key); }
+window.addEventListener('keydown', e => { if ((mode==='won'&&e.key==='Enter')||(['playing','lost','won'].includes(mode) && ['ArrowLeft', 'ArrowRight', 'ArrowUp', ' '].includes(e.key))) e.preventDefault(); press(e.key, e.repeat); });
 window.addEventListener('keyup', e => keys.delete(e.key));
 window.addEventListener('blur', () => { keys.clear(); if (mode === 'playing') pause(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && mode === 'playing') pause(); });
@@ -166,8 +194,8 @@ const pavingCache=new Map();
 function pavingRow(row){
   if(typeof document.createElement!=='function')return null;
   const key=selected+':'+row;if(pavingCache.has(key))return pavingCache.get(key);
-  const surface=document.createElement('canvas');surface.width=210;surface.height=42;
-  const brush=surface.getContext('2d');brush.setTransform(.5,0,0,.5,0,0);brush.imageSmoothingEnabled=false;
+  const surface=document.createElement('canvas');surface.width=420;surface.height=84;
+  const brush=surface.getContext('2d');brush.setTransform(1,0,0,1,0,0);brush.imageSmoothingEnabled=false;
   for(let lane=0;lane<5;lane++)SkyPixelArt.tile(brush,lane*84,0,row,lane,selected);
   SkyPixelArt.frieze(brush,0,0,row,selected);pavingCache.set(key,surface);
   if(pavingCache.size>48)pavingCache.delete(pavingCache.keys().next().value);

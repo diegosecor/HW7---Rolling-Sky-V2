@@ -4,7 +4,7 @@ const Art=require('./pixel-art');
 function recorder(){
   const calls=[],stack=[];
   const c={fillStyle:'#000000',globalAlpha:1,
-    fillRect(x,y,w,h){for(const n of [x,y,w,h]){assert.ok(Number.isFinite(n));assert.ok(n%2===0,'pixel rectangles stay on the two-unit grid');}assert.ok(w>0&&h>0);assert.match(this.fillStyle,/^#[0-9a-f]{6}([0-9a-f]{2})?$/i);assert.ok(this.globalAlpha>=0&&this.globalAlpha<=1);calls.push(['rect',x,y,w,h,this.fillStyle,this.globalAlpha]);},
+    fillRect(x,y,w,h){for(const n of [x,y,w,h]){assert.ok(Number.isFinite(n));assert.ok(Number.isInteger(n),'pixel rectangles stay on the integer grid');}assert.ok(w>0&&h>0);assert.match(this.fillStyle,/^#[0-9a-f]{6}([0-9a-f]{2})?$/i);assert.ok(this.globalAlpha>=0&&this.globalAlpha<=1);calls.push(['rect',x,y,w,h,this.fillStyle,this.globalAlpha]);},
     save(){stack.push([this.fillStyle,this.globalAlpha]);calls.push(['save']);},
     restore(){assert.ok(stack.length);[this.fillStyle,this.globalAlpha]=stack.pop();calls.push(['restore']);},
     translate(x,y){assert.ok(Number.isFinite(x)&&Number.isFinite(y));calls.push(['translate',x,y]);},
@@ -21,6 +21,7 @@ for(let index=0;index<Art.THEMES.length;index++){
   assert.equal(render(c=>Art.backdrop(c,index,0,0,true)),render(c=>Art.backdrop(c,index,9999,300,true)),'reduced-motion scenery remains still');
   for(let row=-3;row<=8;row++)for(let lane=0;lane<5;lane++)render(c=>Art.tile(c,90+lane*84,row*84,row,lane,index));
   for(const row of [-13,-7,0,6,13,19])render(c=>Art.frieze(c,90,0,row,index));
+  render(c=>Art.emblem(c,index));render(c=>Art.fern(c,20,20,Art.THEMES[index],index));
   render(c=>Art.vignette(c,index,3.4,false));render(c=>Art.vignette(c,index,3.4,true));
   for(const seed of [0,1,2,19]){render(c=>Art.tree(c,index,seed));render(c=>Art.rock(c,index,seed));}
   render(c=>Art.peak(c,index,3.4,false));render(c=>Art.finish(c,90,200,420,index));
@@ -40,6 +41,9 @@ assert.notEqual(render(c=>Art.orb(c,0)),render(c=>Art.orb(c,1)),'sphere surface 
 for(const h of [0,1,32,65]){render(c=>Art.shadow(c,300,575,h));render(c=>Art.orb(c,.5,1+h/240));}
 render(c=>Art.medal(c));render(c=>Art.text(c,'+100',0,0,2,'#d6fff0'));
 for(const t of [0,.2,.7,1,3]){render(c=>Art.gem(c,t,3,false));render(c=>Art.panel(c,-25,-27,50,54,'#d8f1ad','#79aa68','#3f6853'));}
+const broad=recorder();Art.rect(broad.c,1,3,7,9,'#ffffff');
+assert.ok(broad.calls[0].slice(1,5).every(n=>n%2===0),'large painted clusters retain their two-pixel grid');
+const fine=recorder();Art.micro(fine.c,3,5,1,1,'#ffffff');assert.deepEqual(fine.calls[0].slice(1,5),[3,5,1,1]);
 const tile=recorder();Art.tile(tile.c,90,0,1,2,0);
 assert.ok(new Set(tile.calls.filter(c=>c[0]==='rect').map(c=>c[5])).size>8,'tile shading uses a rich stepped palette');
 console.log('PASS: eight pixel palettes, consistent pixel grid, deterministic textures, animal variations/animation, reduced motion, shading and drawing-state balance.');

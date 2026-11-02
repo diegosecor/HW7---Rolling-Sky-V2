@@ -43,6 +43,7 @@ assert.equal(run('state.status'),'lost');assert.equal(run('mode'),'dying');const
 run('updateEffects(1);');assert.equal(run('mode'),'lost');
 listeners.keydown({key:' ',repeat:false,preventDefault(){}});assert.equal(run('mode'),'playing');assert.equal(run('state.distance'),0);
 run('state.objects=[];state.distance=E.LEVELS[selected].length-1;last=3000;frame(3033);');assert.equal(run('mode'),'won');assert.ok(classes.has('victory'));assert.ok(saved.has('skyline-best'));
+assert.match(node('next-route').textContent,/PLAY LEVEL 01 · AZURE ASCENT/,'clearing the last garden first points to an unfinished garden');
 run('start();state.objects=[{type:"diamond",x:300,d:3,w:20,h:20}];E.step(state,1/120,0,collected);updateHUD();');
 assert.equal(run('state.diamonds'),1);assert.equal(node('diamonds').textContent,'1◇');assert.ok(Number(node('score').textContent)>=100);
 let notes=0;sandbox.captureNote=()=>notes++;
@@ -53,7 +54,12 @@ for(const match of html.matchAll(/(?:src|href)="([^"#]+)"/g))assert.ok(fs.exists
 routes[0].onclick();node('start').onclick();
 run("state.objects=[];state.distance=E.LEVELS[0].length-1;last=4000;frame(4033);");
 assert.equal(run('mode'),'won');assert.equal(node('next-route').hidden,false);
-node('next-route').onclick();assert.equal(run('selected'),1);assert.equal(run('mode'),'playing');
+assert.equal(node('screen-label').textContent,'LEVEL 01 / 08 COMPLETE');
+assert.match(node('next-route').textContent,/PLAY LEVEL 02 · VIOLET VELOCITY/);
+assert.equal(node('current-level').textContent,'LEVEL 01 / 08');
+listeners.keydown({key:'Enter',repeat:false,preventDefault(){}});assert.equal(run('selected'),1);assert.equal(run('mode'),'playing');
+assert.equal(node('current-level').textContent,'LEVEL 02 / 08');
+assert.match(node('banner-title').textContent,/LEVEL 02 · VIOLET VELOCITY/);
 node('pause').onclick();node('back-map').onclick();assert.equal(run('mode'),'ready');assert.equal(run('state.distance'),0);assert.ok(!classes.has('playing'));
 for(let index=0;index<E.LEVELS.length;index++){
  routes[index].onclick();node('start').onclick();
@@ -65,8 +71,13 @@ assert.equal(node('screen-label').textContent,'ALL EIGHT GARDENS CLEARED');asser
 const stored=JSON.parse(saved.get('sky-garden-journal'));assert.equal(stored.length,8);assert.ok(stored.every(j=>j.cleared));
 const reopened={...sandbox};vm.createContext(reopened);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),reopened);
 assert.equal(node('campaign-count').textContent,'8 / 8 CLEARED','atlas stamps survive a reload');
+saved.set('sky-garden-journal',JSON.stringify(stored.map((j,i)=>({...j,cleared:i<2}))));
+const continued={...sandbox};vm.createContext(continued);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),continued);
+assert.equal(vm.runInContext('selected',continued),2,'reload selects the first unfinished garden');
+assert.equal(node('current-level').textContent,'LEVEL 03 / 08');
+assert.match(node('journey-next').textContent,/NEXT 04 · JADE SANCTUARY/);
 saved.set('sky-garden-journal','{invalid');
 const recovered={...sandbox};vm.createContext(recovered);vm.runInContext(fs.readFileSync(__dirname+'/game.js','utf8'),recovered);
 assert.equal(node('campaign-count').textContent,'0 / 8 CLEARED','damaged storage does not break the game');
-console.log('PASS: eight-garden atlas, next route, return to map, per-route records, all-gardens victory and storage recovery.');
+console.log('PASS: eight-garden atlas, named next route/Enter shortcut, current-level cues, continue on reload, return to map, per-route records, all-gardens victory and storage recovery.');
 console.log('PASS: orthographic 2D view, consistent tile scale, all eight routes, start/input/pause/restart, immediate collision stop, victory, gems, best score and music.');
